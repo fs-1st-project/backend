@@ -17,7 +17,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp initializeFirebaseApp() throws IOException {
         // 서비스 계정의 JSON 키 파일 경로
-        String serviceAccountKeyPath = "src/main/java/com/fs1stbackend/firebase-adminsdk.json";
+        String serviceAccountKeyPath = "src/main/java/com/fs1stbackend/.env";
 
         // Firebase 앱 초기화를 위한 옵션 설정
         FileInputStream serviceAccount = new FileInputStream(serviceAccountKeyPath);
