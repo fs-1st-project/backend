@@ -3,13 +3,12 @@ package com.fs1stbackend.service;
 import com.google.firebase.database.*;
 import org.springframework.stereotype.Service;
 
-/*Firebase 데이터베이스 접근*/
+/* Firebase 데이터베이스 접근 */
 
 @Service
 public class FirebaseService {
 
     public void fetchDataFromFirebase() {
-
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("restricted_access/secret_document");
 
@@ -25,5 +24,10 @@ public class FirebaseService {
                 System.err.println("Error reading data: " + error.getMessage());
             }
         });
+    }
+
+    public void getData(String path, ValueEventListener listener) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
+        ref.addListenerForSingleValueEvent(listener);
     }
 }
