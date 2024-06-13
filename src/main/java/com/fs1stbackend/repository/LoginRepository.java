@@ -1,6 +1,7 @@
 package com.fs1stbackend.repository;
 
 import com.fs1stbackend.model.User;
+import com.fs1stbackend.service.mapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,16 +23,5 @@ public class LoginRepository {
             return Optional.ofNullable(existingUser);
         }
 
-
-        public class UserRowMapper implements RowMapper<User> {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return User.builder()
-                        .id(rs.getLong("id"))
-                        .email(rs.getString("email"))
-                        .password(rs.getString("password"))
-                        .build();
-            }
-        }
 }
 
