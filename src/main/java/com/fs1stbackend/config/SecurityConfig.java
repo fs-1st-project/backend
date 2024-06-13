@@ -18,9 +18,10 @@ public class SecurityConfig {
                     .cors(cors -> cors.disable()) // CORS 보호 비활성화
                     .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
-                                    .requestMatchers("/users/register").permitAll()// 회원가입 엔드포인트에 대한 접근 허용
-                                    .requestMatchers("/users/login").permitAll()
-                                    .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
+                                    .requestMatchers("/users/register").permitAll() // 회원가입 엔드포인트에 대한 접근 허용
+                                    .requestMatchers("/firebase/auth/google").permitAll() //구글 로그인 엔드포인트에 대한 접근 허용
+                                    .requestMatchers("/firebase/auth/user/**").permitAll() //받은 uid 로그인 엔드포인트에 대한 접근 허용
+                                    .anyRequest().authenticated()// 그 외의 모든 요청은 인증 필요
                     );
 
             return http.build();

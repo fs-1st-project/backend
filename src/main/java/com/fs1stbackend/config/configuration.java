@@ -15,7 +15,6 @@ public class configuration {
 
         // 허용할 Origin 설정
         config.addAllowedOrigin("*");
-
         // 허용할 HTTP 메서드 설정
         config.addAllowedMethod("*");
 
