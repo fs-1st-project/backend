@@ -25,14 +25,24 @@ public  class SignupRepository{
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, new UserRowMapper());
     }
 
-    private static class UserRowMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
-            user.setId(rs.getLong("id"));
-            user.setEmail(rs.getString("email"));
-            user.setPassword(rs.getString("password"));
-            return user;
+//    private static class UserRowMapper implements RowMapper<User> {
+//        @Override
+//        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+//            User user = new User();
+//            user.setId(rs.getLong("id"));
+//            user.setEmail(rs.getString("email"));
+//            user.setPassword(rs.getString("password"));
+//            return user;
+//        }
+//    }
+public class UserRowMapper implements RowMapper<User> {
+    @Override
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return User.builder()
+                .id(rs.getLong("id"))
+                .email(rs.getString("email"))
+                .password(rs.getString("password"))
+                .build();
         }
     }
 }
