@@ -97,22 +97,16 @@ public class FirebaseController {
 
             String customToken = firebaseAuthService.createCustomToken(uid);
 
+            //커스텀 토큰 출력해보기
+            System.out.println("Custom Token: " + customToken);
+            //userRecord의 정보를 로그로 출력
+            System.out.println("User Record: " + userRecord.toString());
+
             return ResponseEntity.ok(customToken);
         } catch (FirebaseAuthException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid ID token: " + e.getMessage());
-        }
-    }
-
-    // 추가: GoogleAuthRequest 클래스 정의 = dto
-    class GoogleAuthRequest {
-        private String idToken;
-
-        public String getIdToken() {
-            return idToken;
-        }
-
-        public void setIdToken(String idToken) {
-            this.idToken = idToken;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 }
