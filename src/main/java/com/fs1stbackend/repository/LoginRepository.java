@@ -15,10 +15,11 @@ import java.util.Optional;
 @Repository
 public class LoginRepository {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public Optional<User> loginUser(String email, String password) {
-        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ? LIMIT 1";
         try{
             User existingUser = jdbcTemplate.queryForObject(sql, new Object[]{email, password}, new UserRowMapper());
             return Optional.ofNullable(existingUser);
