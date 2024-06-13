@@ -1,13 +1,12 @@
 package com.fs1stbackend.web;
 
+import com.fs1stbackend.dto.GoogleAuthRequestDTO;
+import com.fs1stbackend.dto.UserInfoDTO;
 import com.fs1stbackend.service.FirebaseService;
 import com.fs1stbackend.service.FirebaseAuthService;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -29,51 +31,6 @@ public class FirebaseController {
     @Autowired
     private FirebaseAuthService firebaseAuthService;
 
-    @GetMapping("/data/{path}")
-    @Operation(summary = "Get data from Firebase", description = "Get data from a specific path in Firebase database")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved data"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Object> getData(@PathVariable String path) {
-        try {
-            // 비동기 방식으로 데이터를 가져옵니다.
-            firebaseService.getData(path, new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // 데이터를 가져왔을 때의 처리 로직입니다.
-                    Object data = dataSnapshot.getValue();
-
-                    // 응답을 직접 반환하는 대신 데이터를 필드에 저장하고,
-                    // 비동기 처리가 완료된 후에 응답을 반환합니다.
-                    // 여기서는 ResponseEntity를 필드로 선언하여 사용합니다.
-                    responseData = ResponseEntity.ok(data);
-                    System.out.println("Success!");
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // 오류가 발생했을 때의 처리 로직입니다.
-                    // 오류 메시지를 필드에 저장하고, 비동기 처리가 완료된 후에 응답을 반환합니다.
-                    errorResponse = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(databaseError.getMessage());
-                }
-            });
-
-            // 비동기 처리를 기다리지 않고 바로 응답을 반환합니다.
-            return ResponseEntity.ok("Request is being processed");
-        } catch (Exception e) {
-            // 동기적으로 처리되는 오류를 여기서 처리합니다.
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    // 클래스 내에 ResponseEntity 필드를 선언합니다.
-    private ResponseEntity<Object> responseData;
-    private ResponseEntity<Object> errorResponse;
-
-
     @PostMapping("/auth/google")
     @Operation(summary = "Authenticate with Google", description = "Authenticate user with Google OAuth2 token")
     @ApiResponses(value = {
@@ -82,7 +39,7 @@ public class FirebaseController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Object> authenticateWithGoogle(@RequestBody GoogleAuthRequest request) {
+    public ResponseEntity<Object> authenticateWithGoogle(@RequestBody GoogleAuthRequestDTO request) {
         try {
             String idToken = request.getIdToken();
             FirebaseToken decodedToken = firebaseAuthService.verifyIdToken(idToken);
@@ -102,14 +59,46 @@ public class FirebaseController {
             //userRecord의 정보를 로그로 출력
             System.out.println("User Record: " + userRecord.toString());
 
-            return ResponseEntity.ok(customToken);
+            // 사용자 정보를 ResponseEntity로 반환
+            Map<String, String> userInfo = new HashMap<>();
+            userInfo.put("uid", userRecord.getUid());
+            userInfo.put("email", userRecord.getEmail());
+            userInfo.put("displayName", userRecord.getDisplayName());
+            userInfo.put("photoUrl", userRecord.getPhotoUrl());
+
+            // customToken과 userInfo를 함께 반환
+            Map<String, Object> response = new HashMap<>();
+            response.put("customToken", customToken);
+            response.put("userInfo", userInfo);
+
+            return ResponseEntity.ok(response);
         } catch (FirebaseAuthException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
+
+    // 사용자 정보를 GET 요청으로 반환하는 엔드포인트 추가
+    @GetMapping("/auth/user/{uid}")
+    public ResponseEntity<Object> getUserInfo(@PathVariable String uid) {
+        try {
+            UserRecord userRecord = firebaseAuthService.getUser(uid);
+
+            //사용자 정보 가져오기: 유저 uid, 이메일, displayname, 사진 url
+            UserInfoDTO userInfoDTO = new UserInfoDTO();
+            userInfoDTO.setUid(userRecord.getUid());
+            userInfoDTO.setEmail(userRecord.getEmail());
+            userInfoDTO.setDisplayName(userRecord.getDisplayName());
+            userInfoDTO.setPhotoUrl(userRecord.getPhotoUrl());
+
+            return ResponseEntity.ok(userInfoDTO);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found: " + e.getMessage());
+        }
+    }
 }
+
 
 
 
