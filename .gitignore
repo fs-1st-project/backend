@@ -38,3 +38,6 @@ out/
 
 ### secret file ###
 .env
+
+### yaml 파일 ###
+src/main/resources/*.yaml
