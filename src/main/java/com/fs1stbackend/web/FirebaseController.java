@@ -2,6 +2,7 @@ package com.fs1stbackend.web;
 
 import com.fs1stbackend.dto.GoogleAuthRequestDTO;
 import com.fs1stbackend.dto.UserInfoDTO;
+import com.fs1stbackend.model.GoogleUser;
 import com.fs1stbackend.service.FirebaseService;
 import com.fs1stbackend.service.FirebaseAuthService;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -44,6 +45,7 @@ public class FirebaseController {
             String idToken = request.getIdToken();
             FirebaseToken decodedToken = firebaseAuthService.verifyIdToken(idToken);
             String uid = decodedToken.getUid();
+            String email = decodedToken.getEmail();
 
             UserRecord userRecord;
             try {
@@ -51,6 +53,10 @@ public class FirebaseController {
             } catch (FirebaseAuthException e) {
                 userRecord = firebaseAuthService.createUser(uid, decodedToken.getEmail(), decodedToken.getName());
             }
+
+            // 구글 이메일을 데이터베이스에 저장
+            GoogleUser user = new GoogleUser(email, uid); // uid를 비밀번호 필드에 저장
+            userRepository.save(user);
 
             String customToken = firebaseAuthService.createCustomToken(uid);
 
