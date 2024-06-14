@@ -35,6 +35,8 @@ public class UserHomeService {
                     userEmail = claims.getSubject();
                     Optional<UserAndUserProfile> user = userHomeRepository.findUserProfileAtHome(userEmail);
 
+                    System.out.println(user + "레파지토리로부터 받은 유저와유저프로필");
+
                     // userEmail로 repository에서 데이터와 비교 후 user 정보를 날려줬을 때
                     if(user.isPresent()) {
                         userAndUserProfileDTO = new UserAndUserProfileDTO(user.get());

@@ -26,8 +26,11 @@ public class UserHomeRepository {
                 "JOIN user_profiles p ON u.id = p.user_id " +
                 "WHERE u.email = ? " +
                 "LIMIT 1";
+
         try {
             UserAndUserProfile user = jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserAndUserProfileRowMapper());
+            System.out.println("쿼리 날리고 직후이다");
+            System.out.println(user + "데이터에서 받은 조회 값");
             return Optional.ofNullable(user);
 
         } catch (EmptyResultDataAccessException e) {
