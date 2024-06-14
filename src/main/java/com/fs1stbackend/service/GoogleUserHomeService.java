@@ -1,17 +1,16 @@
 package com.fs1stbackend.service;
 
-import com.fs1stbackend.model.GoogleUser;
-import com.fs1stbackend.repository.UserRepository;
+import com.fs1stbackend.repository.GoogleUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class GoogleUserHomeService {
 
     @Autowired
-    private UserRepository userRepository;
+    private GoogleUserRepository googleUserRepository;
 
     public void saveUser(String email, String password) {
-        userRepository.save(email, password);
+        googleUserRepository.save(email, password);
     }
 }
