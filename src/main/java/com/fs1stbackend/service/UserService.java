@@ -11,9 +11,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void saveUser(GoogleUser email, GoogleUser password) {
-        return userRepository.save(email, password);
+    public void saveUser(String email, String password) {
+        userRepository.save(email, password);
     }
+
 
 //    public GoogleUser getUserById(String uid) {
 //        return userRepository.findById(uid).orElse(null);
