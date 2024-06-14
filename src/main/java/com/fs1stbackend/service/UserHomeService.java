@@ -1,7 +1,7 @@
 package com.fs1stbackend.service;
 
-import com.fs1stbackend.dto.UserDTO;
-import com.fs1stbackend.model.User;
+import com.fs1stbackend.dto.UserAndUserProfileDTO;
+import com.fs1stbackend.model.UserAndUserProfile;
 import com.fs1stbackend.repository.UserHomeRepository;
 import com.fs1stbackend.service.exception.InvalidTokenException;
 import com.fs1stbackend.service.exception.UserNotFoundException;
@@ -19,10 +19,10 @@ public class UserHomeService {
     @Autowired
     private UserHomeRepository userHomeRepository;
 
-    public UserDTO getUserAtHome(@RequestHeader("Authorization") String authorizationHeader) {
+    public UserAndUserProfileDTO getUserAtHome(@RequestHeader("Authorization") String authorizationHeader) {
         String token = null;
         String userEmail = null;
-        UserDTO userDTO = null;
+        UserAndUserProfileDTO userAndUserProfileDTO = null;
 
         // 토큰을 받았는지 확인
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -33,13 +33,13 @@ public class UserHomeService {
                 if(JwtTokenUtility.validateToken(token)) {
                     Claims claims = JwtTokenUtility.extractClaims(token);
                     userEmail = claims.getSubject();
-                    Optional<User> user = userHomeRepository.getUserAtHome(userEmail);
+                    Optional<UserAndUserProfile> user = userHomeRepository.findUserProfileAtHome(userEmail);
                     System.out.println("데이터에서 유저를 조회한 후 받은 데이터" + user);
 
                     // userEmail로 repository에서 데이터와 비교 후 user 정보를 날려줬을 때
                     if(user.isPresent()) {
-                        userDTO = new UserDTO(user.get());
-                        System.out.println("데이터에서 Dto로 변환한 값" + userDTO);
+                        userAndUserProfileDTO = new UserAndUserProfileDTO(user.get());
+                        System.out.println("데이터에서 Dto로 변환한 값" + userAndUserProfileDTO);
                     }
 
                 } else {
@@ -50,6 +50,6 @@ public class UserHomeService {
             }
 
         }
-        return userDTO;
+        return userAndUserProfileDTO;
     }
 }

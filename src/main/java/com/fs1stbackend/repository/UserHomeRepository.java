@@ -1,8 +1,11 @@
 package com.fs1stbackend.repository;
 
 import com.fs1stbackend.model.User;
+import com.fs1stbackend.model.UserAndUserProfile;
+import com.fs1stbackend.service.mapper.UserAndUserProfileRowMapper;
 import com.fs1stbackend.service.mapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -17,13 +20,17 @@ public class UserHomeRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Optional<User> getUserAtHome(String userEmail) {
-        String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+    public Optional<UserAndUserProfile> findUserProfileAtHome(String userEmail) {
+        String sql = "SELECT p.profile_picture, p.profile_background_picture, p.full_name, p.introduction " +
+                "FROM users u " +
+                "JOIN user_profiles p ON u.id = p.user_id " +
+                "WHERE u.email = ? " +
+                "LIMIT 1";
         try {
-            User user = jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
+            UserAndUserProfile user = jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserAndUserProfileRowMapper());
             return Optional.ofNullable(user);
 
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
             return Optional.empty();
         }
