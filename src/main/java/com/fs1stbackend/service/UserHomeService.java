@@ -24,7 +24,7 @@ public class UserHomeService {
                 if(JwtTokenUtility.validateToken(token)) {
                     Claims claims = JwtTokenUtility.extractClaims(token);
                     userEmail = claims.getSubject();
-
+                    userHomeRepository.getUserAtHome(userEmail);
                 } else {
                     return "토큰이 유효하지 않습니다";
                 }
