@@ -67,6 +67,7 @@ public class FirebaseController {
             System.out.println("Custom Token: " + customToken);
             //userRecord의 정보를 로그로 출력
             System.out.println("User Record: " + userRecord.toString());
+            System.out.println("출력테스트출력테스트");
 
             // 사용자 정보를 ResponseEntity로 반환
             Map<String, String> userInfo = new HashMap<>();
