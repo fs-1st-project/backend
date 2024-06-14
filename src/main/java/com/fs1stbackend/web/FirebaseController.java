@@ -2,11 +2,9 @@ package com.fs1stbackend.web;
 
 import com.fs1stbackend.dto.GoogleAuthRequestDTO;
 import com.fs1stbackend.dto.UserInfoDTO;
-import com.fs1stbackend.model.GoogleUser;
-import com.fs1stbackend.repository.UserRepository;
 import com.fs1stbackend.service.FirebaseService;
 import com.fs1stbackend.service.FirebaseAuthService;
-import com.fs1stbackend.service.UserService;
+import com.fs1stbackend.service.GoogleUserHomeService;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
@@ -35,7 +33,7 @@ public class FirebaseController {
     private FirebaseAuthService firebaseAuthService;
 
     @Autowired
-    private UserService userService;
+    private GoogleUserHomeService googleUserHomeService;
 
     @PostMapping("/auth/google")
     @Operation(summary = "Authenticate with Google", description = "Authenticate user with Google OAuth2 token")
@@ -63,7 +61,7 @@ public class FirebaseController {
 
 
             // 구글 로그인 성공 시 데이터베이스에 저장
-            userService.saveUser(email, uid);
+            googleUserHomeService.saveUser(email, uid);
 
             //커스텀 토큰 출력해보기
             System.out.println("Custom Token: " + customToken);
