@@ -4,7 +4,7 @@ USE linkedin_db;
 
 CREATE TABLE IF NOT EXISTS users(
 id BIGINT AUTO_INCREMENT PRIMARY KEY,
-email VARCHAR(255) NOT NULL,
+email VARCHAR(255) UNIQUE NOT NULL, #unique 제약조건 추가
 password VARCHAR(255) NOT NULL
 );
 
@@ -57,6 +57,6 @@ INSERT INTO comments (comment_content, post_id) VALUES
 ('세번째 게시물 댓글데스', 3);
 
 INSERT INTO user_profiles (profile_picture, profile_background_picture, full_name, introduction, bio, education, location, certification, user_id) VALUES
-('FFD8FFE000104A464946.', '89504E470D0A1A0A0000...', 'jeongmin choi', '제이미의 소개글', NULL, '와플대학 와플학', '인천', NULL, 3),
-('89504E470D0A1A0A0000', 'FFD8FFE000104A464946...', 'yeonhee kim', '연희님의 소개글', NULL, '서울대 컴퓨터공학', '서울', NULL, 4),
-('FFD8FFE000104A464946', '89504E470D0A1A0A0000...', 'sangyoon kim', '상윤님의 소개글', NULL, '연세대 의예과', '대전', NULL, 5);
+('FFD8FFE000104A464946.', '89504E470D0A1A0A0000...', 'jeongmin choi', '제이미의 소개글', NULL, '와플대학 와플학', '인천', NULL, 1),
+('89504E470D0A1A0A0000', 'FFD8FFE000104A464946...', 'yeonhee kim', '연희님의 소개글', NULL, '서울대 컴퓨터공학', '서울', NULL, 2),
+('FFD8FFE000104A464946', '89504E470D0A1A0A0000...', 'sangyoon kim', '상윤님의 소개글', NULL, '연세대 의예과', '대전', NULL, 3);
