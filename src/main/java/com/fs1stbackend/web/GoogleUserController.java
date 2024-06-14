@@ -13,10 +13,15 @@ public class GoogleUserController {
     @Autowired
     private GoogleUserHomeService googleUserService;
 
-    @GetMapping("/{userId}/profile")
-    public GoogleUserProfileDTO getUserProfile(@PathVariable Long userId) {
+//    @GetMapping("/{userId}/profile")
+//    public GoogleUserProfileDTO getUserProfile(@PathVariable Long userId) {
+//
+//        return googleUserService.getUserProfile(userId);
+//    }
 
-        return googleUserService.getUserProfile(userId);
+    @GetMapping("/{uid}/profile")
+    public GoogleUserProfileDTO getUserProfile(@PathVariable String uid, @RequestHeader("Authorization") String token) {
+        return googleUserService.getUserProfileByUid(uid);
     }
 
 }

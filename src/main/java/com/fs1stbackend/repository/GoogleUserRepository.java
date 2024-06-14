@@ -30,6 +30,11 @@ public class GoogleUserRepository {
         }
     }
 
+    public Long findUserIdByUid(String uid) {
+        String sql = "SELECT id FROM users WHERE password = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{uid}, Long.class);
+    }
+
     public GoogleUserProfileDTO getUserProfileById(Long userId) {
         String sql = "SELECT u.email, u.password, up.profile_picture, up.profile_background_picture, up.full_name, " +
                 "up.introduction, up.bio, up.education, up.location, up.certification " +

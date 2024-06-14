@@ -16,7 +16,8 @@ public class GoogleUserHomeService {
     }
 
 
-    public GoogleUserProfileDTO getUserProfile(Long userId) {
+    public GoogleUserProfileDTO getUserProfileByUid(String uid) {
+        Long userId = googleUserRepository.findUserIdByUid(uid);
         return googleUserRepository.getUserProfileById(userId);
     }
 }
