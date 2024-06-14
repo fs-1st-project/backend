@@ -14,9 +14,4 @@ public class UserService {
     public void saveUser(String email, String password) {
         userRepository.save(email, password);
     }
-
-
-//    public GoogleUser getUserById(String uid) {
-//        return userRepository.findById(uid).orElse(null);
-//    }
 }
