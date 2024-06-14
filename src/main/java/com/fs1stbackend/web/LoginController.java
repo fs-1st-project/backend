@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.logging.Logger;
 
+import static com.fs1stbackend.service.jwt.JwtTokenUtility.validateAndGenerateToken;
 import static java.sql.DriverManager.println;
 
 @RestController
@@ -38,7 +39,7 @@ public class LoginController {
             // 성공적으로 토큰을 받았을 경우, 토큰을 JSON 형태로 반환
             return ResponseEntity.ok().body(Collections.singletonMap("token", token));
         } catch (UserNotFoundException e) {
-            // 예외가 발생했을 경우, 500 Internal Server Error 반환
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

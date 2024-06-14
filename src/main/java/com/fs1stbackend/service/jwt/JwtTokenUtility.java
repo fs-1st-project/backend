@@ -1,5 +1,7 @@
 package com.fs1stbackend.service.jwt;
 
+import com.fs1stbackend.dto.LoginDTO;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -21,13 +23,28 @@ public class JwtTokenUtility {
                 .compact();
     }
 
-    // JWT 검증하는 메서드
+    // JWT 검증 메서드
     public static boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우 false 반환
             return false;
+        } catch (Exception e) {
+            // 그 외 예외 발생 시 false 반환
+            return false;
+        }
+    }
+
+    // JWT 만료 검사 후, 토큰 재생성
+    public static String validateAndGenerateToken(String userEmail, String token) {
+        // 토큰이 유효한 지, 검사
+        if (token != null && validateToken(token)) {
+            return token;
+        } else {
+            // 토큰이 만료 되었을 때, 토큰 재생성
+            return generateToken(userEmail);
         }
     }
 }
