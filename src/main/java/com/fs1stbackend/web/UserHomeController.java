@@ -17,9 +17,9 @@ public class UserHomeController {
     private UserHomeService userHomeService;
 
     @GetMapping("/user")
-    public UserAndUserProfileDTO getUserAtHome(@RequestHeader("Authorization") String authorizationHeader) {
+    public UserAndUserProfileDTO findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
         System.out.println("클라이언트로부터 토큰을 받았습니다");
-        UserAndUserProfileDTO userAndUserProfileDTO = userHomeService.getUserAtHome(authorizationHeader);
+        UserAndUserProfileDTO userAndUserProfileDTO = userHomeService.findUserProfileAtHome(authorizationHeader);
 
         System.out.println("userDTO" + userAndUserProfileDTO);
 

@@ -19,7 +19,7 @@ public class UserHomeService {
     @Autowired
     private UserHomeRepository userHomeRepository;
 
-    public UserAndUserProfileDTO getUserAtHome(@RequestHeader("Authorization") String authorizationHeader) {
+    public UserAndUserProfileDTO findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
         String token = null;
         String userEmail = null;
         UserAndUserProfileDTO userAndUserProfileDTO = null;
@@ -34,12 +34,10 @@ public class UserHomeService {
                     Claims claims = JwtTokenUtility.extractClaims(token);
                     userEmail = claims.getSubject();
                     Optional<UserAndUserProfile> user = userHomeRepository.findUserProfileAtHome(userEmail);
-                    System.out.println("데이터에서 유저를 조회한 후 받은 데이터" + user);
 
                     // userEmail로 repository에서 데이터와 비교 후 user 정보를 날려줬을 때
                     if(user.isPresent()) {
                         userAndUserProfileDTO = new UserAndUserProfileDTO(user.get());
-                        System.out.println("데이터에서 Dto로 변환한 값" + userAndUserProfileDTO);
                     }
 
                 } else {
