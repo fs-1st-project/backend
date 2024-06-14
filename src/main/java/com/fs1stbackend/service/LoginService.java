@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
+import static com.fs1stbackend.service.jwt.JwtTokenUtility.validateAndGenerateToken;
+
 @Service
 public class LoginService {
 
@@ -23,7 +25,11 @@ public class LoginService {
 
         // db에 시도한 이메일과 패스워드를 가진 회원이 있다면, 토큰 생성 후 전달
         if(existingUserOptional.isPresent()) {
-            return JwtTokenUtility.generateToken(loginDTO.getEmail());
+            // 토큰 생성
+            String token = JwtTokenUtility.generateToken(loginDTO.getEmail());
+
+            // 갖고 있는 토큰이 있다면, 만료 되었는지 확인 및 토큰 재생성
+            return JwtTokenUtility.validateAndGenerateToken(loginDTO.getEmail(), token);
         } else {
             throw new UserNotFoundException("데이터베이스에서 해당 유저를 찾을 수 없습니다");
         }
