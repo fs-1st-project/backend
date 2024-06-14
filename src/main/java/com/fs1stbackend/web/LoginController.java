@@ -20,7 +20,7 @@ import static com.fs1stbackend.service.jwt.JwtTokenUtility.validateAndGenerateTo
 import static java.sql.DriverManager.println;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class LoginController {
 
     @Autowired
