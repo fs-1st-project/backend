@@ -23,6 +23,7 @@ public class SecurityConfig {
                                     .requestMatchers("/home/user").permitAll()
                                     .requestMatchers("/firebase/auth/google").permitAll() //구글 로그인 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/firebase/auth/user/**").permitAll() //받은 uid 로그인 엔드포인트에 대한 접근 허용
+                                    .requestMatchers("/api/users/{uid}/profile").permitAll()
                                     .anyRequest().authenticated()// 그 외의 모든 요청은 인증 필요
                     );
 
