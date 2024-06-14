@@ -1,6 +1,7 @@
 package com.fs1stbackend.service.jwt;
 
 import com.fs1stbackend.dto.LoginDTO;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -46,5 +47,13 @@ public class JwtTokenUtility {
             // 토큰이 만료 되었을 때, 토큰 재생성
             return generateToken(userEmail);
         }
+    }
+
+    // 앞단에서 받은 토큰 parse
+    public static Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
