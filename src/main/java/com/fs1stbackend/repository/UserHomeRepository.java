@@ -5,18 +5,21 @@ import com.fs1stbackend.service.mapper.UserRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class UserHomeRepository {
 
     private JdbcTemplate jdbcTemplate;
 
-    public User getUserAtHome(String userEmail) {
+    public Optional<User> getUserAtHome(String userEmail) {
         String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
         try{
-            return jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
+            User user = jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
+            return Optional.ofNullable(user);
 
         } catch (Exception e) {
-            return
+            return Optional.empty();
         }
     }
 
