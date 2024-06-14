@@ -1,8 +1,13 @@
 package com.fs1stbackend.repository;
 
+import com.fs1stbackend.dto.GoogleUserProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Repository
 public class GoogleUserRepository {
@@ -23,5 +28,29 @@ public class GoogleUserRepository {
             // 이미 존재하는 이메일 처리 (필요 시)
             System.out.println("Email already exists: " + email);
         }
+    }
+
+    public GoogleUserProfileDTO getUserProfileById(Long userId) {
+        String sql = "SELECT u.email, u.password, up.profile_picture, up.profile_background_picture, up.full_name, " +
+                "up.introduction, up.bio, up.education, up.location, up.certification " +
+                "FROM users u JOIN user_profiles up ON u.id = up.user_id WHERE u.id = ?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{userId}, new RowMapper<GoogleUserProfileDTO>() {
+            @Override
+            public GoogleUserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new GoogleUserProfileDTO(
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getBytes("profile_picture"),
+                        rs.getBytes("profile_background_picture"),
+                        rs.getString("full_name"),
+                        rs.getString("introduction"),
+                        rs.getString("bio"),
+                        rs.getString("education"),
+                        rs.getString("location"),
+                        rs.getString("certification")
+                );
+            }
+        });
     }
 }
