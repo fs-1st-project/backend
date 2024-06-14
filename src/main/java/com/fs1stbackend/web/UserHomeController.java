@@ -21,8 +21,6 @@ public class UserHomeController {
         System.out.println("클라이언트로부터 토큰을 받았습니다");
         UserAndUserProfileDTO userAndUserProfileDTO = userHomeService.findUserProfileAtHome(authorizationHeader);
 
-        System.out.println("userDTO" + userAndUserProfileDTO);
-
         if (userAndUserProfileDTO != null) {
             return userAndUserProfileDTO;
         } else {

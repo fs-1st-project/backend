@@ -12,22 +12,22 @@ public class UserAndUserProfileRowMapper implements RowMapper<UserAndUserProfile
     @Override
     public UserAndUserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = User.builder()
-                .id(rs.getLong("id"))
-                .email(rs.getString("email"))
-                .password(rs.getString("password"))
+                .id(rs.getLong("u.id"))
+                .email(rs.getString("u.email"))
+                .password(rs.getString("u.password"))
                 .build();
 
         UserProfile userProfile = UserProfile.builder()
-                .id(rs.getLong("id"))
-                .profilePicture(rs.getBytes("profile_picture"))
-                .profileBackGroundPicture(rs.getBytes("profile_background_picture"))
-                .fullName(rs.getString("full_name"))
-                .introduction(rs.getString("introduction"))
-                .bio(rs.getString("bio"))
-                .education(rs.getString("education"))
-                .location(rs.getString("location"))
-                .certification(rs.getString("certification"))
-                .userId(rs.getLong("user_id"))
+                .id(rs.getLong("p.id"))
+                .profilePicture(rs.getBytes("p.profile_picture"))
+                .profileBackGroundPicture(rs.getBytes("p.profile_background_picture"))
+                .fullName(rs.getString("p.full_name"))
+                .introduction(rs.getString("p.introduction"))
+                .bio(rs.getString("p.bio"))
+                .education(rs.getString("p.education"))
+                .location(rs.getString("p.location"))
+                .certification(rs.getString("p.certification"))
+                .userId(rs.getLong("p.user_id"))
                 .build();
 
         UserAndUserProfile userAndUserProfile = new UserAndUserProfile();
