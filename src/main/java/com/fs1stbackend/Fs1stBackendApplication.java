@@ -1,6 +1,7 @@
 package com.fs1stbackend;
 
 import com.fs1stbackend.service.FirebaseService;
+import com.fs1stbackend.service.jwt.JwtTokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,12 +13,13 @@ public class Fs1stBackendApplication implements CommandLineRunner {
     @Autowired
     private FirebaseService firebaseService;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Fs1stBackendApplication.class, args);
-    }
+    public static void main(String[] args) {SpringApplication.run(Fs1stBackendApplication.class, args);}
 
     @Override
     public void run(String... args) throws Exception {
         firebaseService.fetchDataFromFirebase();
     }
+
+
+
 }

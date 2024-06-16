@@ -27,7 +27,7 @@ public class UserHomeService {
         // 토큰을 받았는지 확인
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
-
+            System.out.println("token: " + token);
                 // 토큰이 유효하면 토큰 parse해서 해당 유저 정보 얻기
                 if(JwtTokenUtility.validateToken(token)) {
                     Claims claims = JwtTokenUtility.extractClaims(token);
