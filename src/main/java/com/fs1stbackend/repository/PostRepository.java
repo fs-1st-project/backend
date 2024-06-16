@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Date;
 
 @Repository
 public class PostRepository {
@@ -29,10 +33,10 @@ public class PostRepository {
                     return "컨텐츠, 시간 데이터에 삽입 되었습니다.";
                 } else{
                     String createPostSql = "INSERT INTO posts (content, image, created_at) VALUES (?, ?, ?)";
-                    String prefix = "data:image/png;base64,";
                     String base64Url = postDTO.getImage();
-                    String pureBase64Url = base64Url.substring(prefix.length());
+                    String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
                     byte[] imageBytes = Base64.getDecoder().decode(pureBase64Url);
+
                     jdbcTemplate.update(createPostSql, postDTO.getContent(), imageBytes, postDTO.getCreated_at());
 
                 }
