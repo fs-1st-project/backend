@@ -48,13 +48,13 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public String updatePost(@PathVariable Long contentId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
+    public String updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
         String content = postContentUpdateDTO.getContent();
         String isUpdateSuccess = "";
 
         try {
             if (content != null && !content.isEmpty()) {
-                isUpdateSuccess = postRepository.updatePost(contentId, content);
+                isUpdateSuccess = postRepository.updatePost(postId, content);
             } else {
                 throw new IllegalArgumentException("Content cannot be null or empty");
             }
@@ -65,11 +65,11 @@ public class PostService {
         return isUpdateSuccess;
     }
 
-    public String deletePost(@PathVariable Long contentId) {
+    public String deletePost(@PathVariable Long postId) {
         String deleteResponse = "";
 
         try {
-            deleteResponse = postRepository.deletePost(contentId);
+            deleteResponse = postRepository.deletePost(postId);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("게시글 삭제 서비스 로직 중 예외 발생");

@@ -20,7 +20,10 @@ CREATE TABLE IF NOT EXISTS posts (
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     comment_content VARCHAR(200),
+    created_at TIMESTAMP,
+    user_id BIGINT,
     post_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
@@ -52,10 +55,10 @@ INSERT INTO posts (content, image, created_at, user_id) VALUES
 ('Second post content', NULL, NOW(), 2),
 ('Third post content', NULL, NOW(), 3);
 
-INSERT INTO comments (comment_content, post_id) VALUES
-('첫번째 게시물의 댓글입니다', 1),
-('두번째 게시물 댓글', 2),
-('세번째 게시물 댓글데스', 3);
+INSERT INTO comments (comment_content, created_at, user_id, post_id) VALUES
+('첫번째 게시물의 댓글입니다', NOW(), 1, 1),
+('두번째 게시물 댓글', NOW(), 2, 2),
+('세번째 게시물 댓글데스', NOW(), 3, 3);
 
 INSERT INTO user_profiles (profile_picture, profile_background_picture, full_name, introduction, bio, education, location, certification, user_id) VALUES
 ('FFD8FFE000104A464946.', '89504E470D0A1A0A0000...', 'jeongmin choi', '제이미의 소개글', NULL, '와플대학 와플학', '인천', NULL, 1),
