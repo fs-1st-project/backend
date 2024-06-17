@@ -60,16 +60,16 @@ public class PostRepository {
         return jdbcTemplate.query(sql, new EntirePostRowMapper());
     }
 
-    public String updatePost(Long contentId, String content) {
+    public String updatePost(Long postId, String content) {
         String sql = "UPDATE posts SET content = ? WHERE id = ?";
 
-        int rowsAffected = jdbcTemplate.update(sql, content, contentId);
+        int rowsAffected = jdbcTemplate.update(sql, content, postId);
         return rowsAffected > 0 ? "Update successful" : "Update failed";
     }
 
-    public String deletePost(Long contentId) {
+    public String deletePost(Long postId) {
         String sql = "DELETE FROM posts WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, contentId);
+        int rowsAffected = jdbcTemplate.update(sql, postId);
         return rowsAffected > 0 ? "Delete successful" : "Delete failed";
     }
 }
