@@ -1,5 +1,6 @@
 package com.fs1stbackend.web;
 
+import com.fs1stbackend.dto.PostContentUpdateDTO;
 import com.fs1stbackend.dto.PostDTO;
 import com.fs1stbackend.dto.PostResponseDTO;
 import com.fs1stbackend.service.PostService;
@@ -31,5 +32,15 @@ public class PostController {
     @GetMapping("/read")
     public ResponseEntity<List<PostResponseDTO>> getAllPost() {
         return ResponseEntity.ok(postService.getAllPost());
+    }
+
+    @PutMapping("/update/{contentId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long contentId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
+        String isUpdateSuccess = postService.updatePost(contentId, postContentUpdateDTO);
+
+        if (isUpdateSuccess.equals("Update failed")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isUpdateSuccess);
+        }
+        return ResponseEntity.ok(isUpdateSuccess);
     }
 }

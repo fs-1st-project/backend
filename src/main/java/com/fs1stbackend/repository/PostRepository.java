@@ -59,6 +59,13 @@ public class PostRepository {
 
         return jdbcTemplate.query(sql, new EntirePostRowMapper());
     }
+
+    public String updatePost(Long contentId, String content) {
+        String sql = "UPDATE posts SET content = ? WHERE id = ?";
+
+        int rowsAffected = jdbcTemplate.update(sql, content, contentId);
+        return rowsAffected > 0 ? "Update successful" : "Update failed";
+    }
 }
 
 
