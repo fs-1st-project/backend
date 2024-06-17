@@ -53,7 +53,7 @@ public class PostRepository {
     }
 
     public List<EntirePost> getAllPost() {
-        String sql = "SELECT p.content, p.image, p.created_at, p.user_id, f.profile_picture, f.full_name, f.introduction FROM posts p " +
+        String sql = "SELECT p.id, p.content, p.image, p.created_at, p.user_id, f.profile_picture, f.full_name, f.introduction FROM posts p " +
                 "JOIN users u ON p.user_id = u.id " +
                 "JOIN user_profiles f ON u.id = f.user_id";
 

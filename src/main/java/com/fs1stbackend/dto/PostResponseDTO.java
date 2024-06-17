@@ -13,6 +13,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 public class PostResponseDTO {
+    private Long id;
     private String content;
     private byte[] image;
     private Date createdAt;
@@ -23,6 +24,7 @@ public class PostResponseDTO {
     private String introduction;
 
     public PostResponseDTO(Post post, UserProfile userProfile) {
+        this.id = post.getId();
         this.content = post.getContent();
         this.image = post.getImage();
         this.createdAt = post.getCreatedAt();

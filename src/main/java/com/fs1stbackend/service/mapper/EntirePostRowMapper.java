@@ -10,6 +10,7 @@ public class EntirePostRowMapper implements RowMapper<EntirePost> {
     @Override
     public EntirePost mapRow(ResultSet rs, int rowNum) throws SQLException {
         Post post = Post.builder()
+                .id(rs.getLong("p.id"))
                 .content(rs.getString("p.content"))
                 .image(rs.getBytes("p.image"))
                 .createdAt(rs.getTimestamp("p.created_at"))
