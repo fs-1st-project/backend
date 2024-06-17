@@ -14,7 +14,7 @@ public class PostRowMapper implements RowMapper<Post> {
                 .id(rs.getLong("id"))
                 .content(rs.getString("content"))
                 .image(rs.getBytes("image"))
-                .created_at(rs.getTimestamp("created_at"))
+                .createdAt(rs.getTimestamp("created_at"))
                 .build();
     }
 }
