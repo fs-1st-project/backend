@@ -66,6 +66,12 @@ public class PostRepository {
         int rowsAffected = jdbcTemplate.update(sql, content, contentId);
         return rowsAffected > 0 ? "Update successful" : "Update failed";
     }
+
+    public String deletePost(Long contentId) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, contentId);
+        return rowsAffected > 0 ? "Delete successful" : "Delete failed";
+    }
 }
 
 

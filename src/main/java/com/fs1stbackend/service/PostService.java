@@ -60,9 +60,21 @@ public class PostService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("서비스 로직 중 예외 발생");
+            System.out.println("게시글 업데이트 서비스 로직 중 예외 발생");
         }
         return isUpdateSuccess;
+    }
+
+    public String deletePost(@PathVariable Long contentId) {
+        String deleteResponse = "";
+
+        try {
+            deleteResponse = postRepository.deletePost(contentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("게시글 삭제 서비스 로직 중 예외 발생");
+        }
+        return deleteResponse;
     }
 
 }
