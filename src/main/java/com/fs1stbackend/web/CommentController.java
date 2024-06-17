@@ -32,5 +32,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllComment(postId));
     }
 
+//    @PutMapping("/update/{postId}/{commentId}")
+
 
 }

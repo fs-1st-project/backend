@@ -13,6 +13,7 @@ public class CommentAllResponseDTO {
     private Long id;
     private String commentContent;
     private Date createdAt;
+    private Long userId;
 
     private byte[] profilePicture;
     private String fullName;
@@ -22,6 +23,7 @@ public class CommentAllResponseDTO {
         this.id = comment.getId();
         this.commentContent = comment.getCommentContent();
         this.createdAt = comment.getCreatedAt();
+        this.userId = comment.getUserId();
 
         this.profilePicture = userProfile.getProfilePicture();
         this.fullName = userProfile.getFullName();

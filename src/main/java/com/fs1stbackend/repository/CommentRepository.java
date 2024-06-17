@@ -31,7 +31,7 @@ public class CommentRepository {
     }
 
     public List<EntireComment> getAllComment(Long postId) {
-        String allCommentSql = "SELECT c.id, c.comment_content, c.created_at, f.profile_picture, f.full_name, f.introduction " +
+        String allCommentSql = "SELECT c.id, c.comment_content, c.created_at, c.user_id, f.profile_picture, f.full_name, f.introduction " +
                                 "FROM comments c " +
                                 "JOIN users u ON c.user_id = u.id " +
                                 "JOIN user_profiles f ON f.user_id = u.id " +
