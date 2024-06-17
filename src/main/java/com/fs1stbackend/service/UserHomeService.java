@@ -1,6 +1,9 @@
 package com.fs1stbackend.service;
 
+import com.fs1stbackend.dto.GoogleUserProfileDTO;
+import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
 import com.fs1stbackend.dto.UserAndUserProfileDTO;
+import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
 import com.fs1stbackend.model.UserAndUserProfile;
 import com.fs1stbackend.repository.UserHomeRepository;
 import com.fs1stbackend.service.exception.InvalidTokenException;
@@ -43,4 +46,29 @@ public class UserHomeService {
         }
         return userAndUserProfileDTO;
     }
+
+    public UserAndUserProfileDTO updateUserProfile(String email, UserAndUserProfileUpdateDTO profileUpdateDTO) {
+        Long userId = userHomeRepository.findUserIdByEmail(email);
+
+        if (userId != null) {
+            userHomeRepository.updateUserProfile(userId, profileUpdateDTO);
+            UserAndUserProfile updatedUserAndUserProfile = userHomeRepository.findUserProfileAtHome(email);
+
+            if (updatedUserAndUserProfile != null) {
+                return new UserAndUserProfileDTO(updatedUserAndUserProfile);
+            } else {
+                // Handle case where updated profile is not found (if necessary)
+                return null;
+            }
+        } else {
+            // Handle case where user ID is not found (if necessary)
+            return null;
+        }
+    }
+
+
+
+
+
+
 }
