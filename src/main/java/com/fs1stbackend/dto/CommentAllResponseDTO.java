@@ -10,6 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class CommentAllResponseDTO {
+    private Long id;
     private String commentContent;
     private Date createdAt;
 
@@ -18,6 +19,7 @@ public class CommentAllResponseDTO {
     private String introduction;
 
     public CommentAllResponseDTO (Comment comment, UserProfile userProfile) {
+        this.id = comment.getId();
         this.commentContent = comment.getCommentContent();
         this.createdAt = comment.getCreatedAt();
 
