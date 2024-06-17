@@ -1,10 +1,17 @@
 package com.fs1stbackend.repository;
 
 import com.fs1stbackend.dto.CommentCreateDTO;
+import com.fs1stbackend.model.EntireComment;
+import com.fs1stbackend.model.EntirePost;
 import com.fs1stbackend.service.exception.UserNotFoundException;
+import com.fs1stbackend.service.mapper.EntireCommentRowMapper;
+import com.fs1stbackend.service.mapper.EntirePostRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Repository
 public class CommentRepository {
@@ -21,6 +28,16 @@ public class CommentRepository {
             e.printStackTrace();
         }
         return "해당 게시글에 댓글 생성을 실패하였습니다";
+    }
+
+    public List<EntireComment> getAllComment(Long postId) {
+        String allCommentSql = "SELECT c.comment_content, c.created_at, f.profile_picture, f.full_name, f.introduction " +
+                                "FROM comments c " +
+                                "JOIN users u ON c.user_id = u.id " +
+                                "JOIN user_profiles f ON f.user_id = u.id " +
+                                "WHERE c.post_id = ?";
+
+        return jdbcTemplate.query(allCommentSql, new Object[]{postId}, new EntireCommentRowMapper());
     }
 
 
