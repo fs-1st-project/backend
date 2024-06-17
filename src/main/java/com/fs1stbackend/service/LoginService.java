@@ -1,6 +1,7 @@
 package com.fs1stbackend.service;
 
 import com.fs1stbackend.dto.LoginDTO;
+import com.fs1stbackend.dto.TokenAndUserIdDTO;
 import com.fs1stbackend.model.User;
 import com.fs1stbackend.repository.LoginRepository;
 import com.fs1stbackend.service.exception.UserNotFoundException;
@@ -19,7 +20,7 @@ public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
 
-    public String loginUser(@RequestBody LoginDTO loginDTO) {
+    public TokenAndUserIdDTO loginUser(@RequestBody LoginDTO loginDTO) {
 
         Optional<User> existingUserOptional = loginRepository.loginUser(loginDTO.getEmail(), loginDTO.getPassword());
 
@@ -29,7 +30,11 @@ public class LoginService {
             String token = JwtTokenUtility.generateToken(loginDTO.getEmail());
 
             // 갖고 있는 토큰이 있다면, 만료 되었는지 확인 및 토큰 재생성
-            return JwtTokenUtility.validateAndGenerateToken(loginDTO.getEmail(), token);
+            String finalToken = JwtTokenUtility.validateAndGenerateToken(loginDTO.getEmail(), token);
+
+            Long existingUserId = existingUserOptional.get().getId();
+
+            return new TokenAndUserIdDTO(finalToken, existingUserId);
         } else {
             throw new UserNotFoundException("데이터베이스에서 해당 유저를 찾을 수 없습니다");
         }

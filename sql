@@ -2,39 +2,40 @@ CREATE DATABASE IF NOT EXISTS linkedin_db;
 
 USE linkedin_db;
 
-CREATE TABLE IF NOT EXISTS users(
-id BIGINT AUTO_INCREMENT PRIMARY KEY,
-email VARCHAR(255) UNIQUE NOT NULL, #unique 제약조건 추가
-password VARCHAR(255) NOT NULL
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS posts(
-id BIGINT AUTO_INCREMENT PRIMARY KEY,
-content TEXT NOT NULL,
-image BLOB,
-created_at DATETIME
+CREATE TABLE IF NOT EXISTS posts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT NOT NULL,
+    image LONGBLOB,
+    created_at TIMESTAMP,
+    user_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS comments(
-id BIGINT AUTO_INCREMENT PRIMARY KEY,
-comment_content VARCHAR(200),
-post_id BIGINT,
-FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    comment_content VARCHAR(200),
+    post_id BIGINT,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE IF NOT EXISTS user_profiles(
-id INT AUTO_INCREMENT PRIMARY KEY,
-profile_picture BLOB,
-profile_background_picture BLOB,
-full_name VARCHAR(50) NOT NULL,
-introduction TEXT,
-bio TEXT,
-education VARCHAR(200),
-location VARCHAR(200),
-certification VARCHAR(200),
-user_id BIGINT,
-FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    profile_picture LONGBLOB,
+    profile_background_picture LONGBLOB,
+    full_name VARCHAR(50) NOT NULL,
+    introduction TEXT,
+    bio TEXT,
+    education VARCHAR(200),
+    location VARCHAR(200),
+    certification VARCHAR(200),
+    user_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 ### 데이터 seed 심는 부분 ###
@@ -46,10 +47,10 @@ INSERT INTO users (email, password) VALUES
 ('test2@example.com', 'password2'),
 ('test3@example.com', 'password3');
 
-INSERT INTO posts (content, image, created_at) VALUES
-('First post content', NULL , NOW()),
-('Second post content', NULL, NOW()),
-('Third post content', NULL, NOW());
+INSERT INTO posts (content, image, created_at, user_id) VALUES
+('First post content', NULL , NOW(), 1),
+('Second post content', NULL, NOW(), 2),
+('Third post content', NULL, NOW(), 3);
 
 INSERT INTO comments (comment_content, post_id) VALUES
 ('첫번째 게시물의 댓글입니다', 1),
