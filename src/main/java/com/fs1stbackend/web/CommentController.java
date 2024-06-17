@@ -1,12 +1,16 @@
 package com.fs1stbackend.web;
 
+import com.fs1stbackend.dto.CommentAllResponseDTO;
 import com.fs1stbackend.dto.CommentCreateDTO;
 import com.fs1stbackend.dto.PostDTO;
+import com.fs1stbackend.dto.PostResponseDTO;
 import com.fs1stbackend.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
@@ -22,5 +26,11 @@ public class CommentController {
         }
         return ResponseEntity.ok("해당 게시글에 댓글 작성이 성공적으로 완료되었습니다.");
     }
+
+    @GetMapping("/read/{postId}")
+    public ResponseEntity<List<CommentAllResponseDTO>> getAllComment(@PathVariable Long postId) {
+        return ResponseEntity.ok(commentService.getAllComment(postId));
+    }
+
 
 }
