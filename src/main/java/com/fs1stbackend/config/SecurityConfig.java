@@ -25,6 +25,7 @@ public class SecurityConfig {
                                     .requestMatchers("/firebase/auth/user/**").permitAll() //받은 uid 로그인 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/api/users/{uid}/profile").permitAll()
                                     .requestMatchers("/post/*").permitAll()
+                                    .requestMatchers("/post/*/*").permitAll()
                                     .anyRequest().authenticated()// 그 외의 모든 요청은 인증 필요
                     );
 

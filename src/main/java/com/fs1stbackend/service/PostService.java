@@ -1,5 +1,6 @@
 package com.fs1stbackend.service;
 
+import com.fs1stbackend.dto.PostContentUpdateDTO;
 import com.fs1stbackend.dto.PostDTO;
 import com.fs1stbackend.dto.PostResponseDTO;
 import com.fs1stbackend.model.EntirePost;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -44,6 +46,23 @@ public class PostService {
        return entirePosts.stream()
                 .map((entirePost) -> new PostResponseDTO(entirePost.getPost(), entirePost.getUserProfile()))
                 .collect(Collectors.toList());
+    }
+
+    public String updatePost(@PathVariable Long contentId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
+        String content = postContentUpdateDTO.getContent();
+        String isUpdateSuccess = "";
+
+        try {
+            if (content != null && !content.isEmpty()) {
+                isUpdateSuccess = postRepository.updatePost(contentId, content);
+            } else {
+                throw new IllegalArgumentException("Content cannot be null or empty");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("서비스 로직 중 예외 발생");
+        }
+        return isUpdateSuccess;
     }
 
 }
