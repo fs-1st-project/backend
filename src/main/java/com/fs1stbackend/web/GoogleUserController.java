@@ -1,6 +1,7 @@
 package com.fs1stbackend.web;
 
 import com.fs1stbackend.dto.GoogleUserProfileDTO;
+import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
 import com.fs1stbackend.service.GoogleUserHomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,12 @@ public class GoogleUserController {
     @GetMapping("/{uid}/profile")
     public GoogleUserProfileDTO getUserProfile(@PathVariable String uid, @RequestHeader("Authorization") String token) {
         return googleUserService.getUserProfileByUid(uid);
+    }
+
+    @PutMapping("/{uid}/profile")
+    public GoogleUserProfileDTO updateUserProfile(@PathVariable String uid, @RequestBody GoogleUserProfileUpdateDTO profileUpdateDTO) {
+        System.out.println("Received PUT request for updating profile. UID: " + uid);
+        return googleUserService.updateUserProfile(uid, profileUpdateDTO);
     }
 
 }
