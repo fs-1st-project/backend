@@ -1,5 +1,6 @@
 package com.fs1stbackend.repository;
 
+import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
 import com.fs1stbackend.model.User;
 import com.fs1stbackend.model.UserAndUserProfile;
 import com.fs1stbackend.service.mapper.UserAndUserProfileRowMapper;
@@ -31,5 +32,41 @@ public class UserHomeRepository {
         return user;
 
         }
+
+    public Long findUserIdByEmail(String email) {
+        String sql = "SELECT id FROM users WHERE email = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, Long.class, email);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
+
+    public void updateUserProfile(Long userId, UserAndUserProfileUpdateDTO profileUpdateDTO) {
+        String updateSql = "UPDATE user_profiles up " +
+                "JOIN users u ON u.id = up.user_id " +
+                "SET up.full_name = ?, " +
+                "    up.introduction = ?, " +
+                "    up.bio = ?, " +
+                "    up.education = ?, " +
+                "    up.location = ?, " +
+                "    up.certification = ?, " +
+                "    up.profile_picture = ?, " +
+                "    up.profile_background_picture = ? " +
+                "WHERE u.id = ?";
+
+        jdbcTemplate.update(updateSql,
+                profileUpdateDTO.getFullName(),
+                profileUpdateDTO.getIntroduction(),
+                profileUpdateDTO.getBio(),
+                profileUpdateDTO.getEducation(),
+                profileUpdateDTO.getLocation(),
+                profileUpdateDTO.getCertification(),
+                profileUpdateDTO.getProfilePicture(),
+                profileUpdateDTO.getProfileBackgroundPicture(),
+                userId);
+    }
+    }
+
+
 
