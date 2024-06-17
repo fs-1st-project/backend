@@ -17,4 +17,5 @@ public class Post {
     private String content;
     private byte[] image;
     private Timestamp createdAt;
+    private Long userId;
 }

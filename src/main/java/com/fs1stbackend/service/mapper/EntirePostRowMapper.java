@@ -13,6 +13,7 @@ public class EntirePostRowMapper implements RowMapper<EntirePost> {
                 .content(rs.getString("p.content"))
                 .image(rs.getBytes("p.image"))
                 .createdAt(rs.getTimestamp("p.created_at"))
+                .userId(rs.getLong("user_id"))
                 .build();
 
         User user = User.builder()

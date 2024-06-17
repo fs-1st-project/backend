@@ -15,6 +15,7 @@ public class PostRowMapper implements RowMapper<Post> {
                 .content(rs.getString("content"))
                 .image(rs.getBytes("image"))
                 .createdAt(rs.getTimestamp("created_at"))
+                .userId(rs.getLong("user_id"))
                 .build();
     }
 }
