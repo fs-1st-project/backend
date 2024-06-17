@@ -1,7 +1,8 @@
 package com.fs1stbackend.service;
 
 import com.fs1stbackend.dto.PostDTO;
-import com.fs1stbackend.model.Post;
+import com.fs1stbackend.dto.PostResponseDTO;
+import com.fs1stbackend.model.EntirePost;
 import com.fs1stbackend.repository.PostRepository;
 import com.fs1stbackend.service.jwt.JwtTokenUtility;
 import io.jsonwebtoken.Claims;
@@ -11,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,44 +34,16 @@ public class PostService {
         return saveResponse;
     }
 
-//    @Transactional
-//    public PostDTO updatePost(Long id, PostDTO postDTO) {
-//        Post post = postRepository.findById(id);
-//        if (post != null) {
-//            post.setContent(postDTO.getContent());
-//            post.setImage(Base64.getDecoder().decode(postDTO.getImage()));
-//            Post updatedPost = postRepository.update(post);
-//            return postDTO;
-//        }
-//        return null;
-//    }
-//
-//    @Transactional
-//    public void deletePost(Long id) {
-//        postRepository.deleteById(id);
-//    }
-//
-//    public PostDTO getPost(Long id) {
-//        Post post = postRepository.findById(id);
-//        if (post != null) {
-//            PostDTO postDTO = new PostDTO();
-//            postDTO.setId(post.getId());
-//            postDTO.setContent(post.getContent());
-//            postDTO.setImage(Base64.getEncoder().encodeToString(post.getImage()));
-//            return postDTO;
-//        }
-//        return null;
-//    }
-//
-//    public List<PostDTO> getAllPosts() {
-//        List<Post> posts = postRepository.findAll();
-//        return posts.stream().map(post -> {
-//            PostDTO postDTO = new PostDTO();
-//            postDTO.setId(post.getId());
-//            postDTO.setContent(post.getContent());
-//            postDTO.setImage(Base64.getEncoder().encodeToString(post.getImage()));
-//            return postDTO;
-//        }).collect(Collectors.toList());
-//    }
+    public List<PostResponseDTO> getAllPost() {
+        List<EntirePost> entirePosts = postRepository.getAllPost();
+
+        if (entirePosts.isEmpty()) {
+            System.out.println("데이터에 게시물이 없습니다.");
+        }
+
+       return entirePosts.stream()
+                .map((entirePost) -> new PostResponseDTO(entirePost.getPost(), entirePost.getUserProfile()))
+                .collect(Collectors.toList());
+    }
 
 }

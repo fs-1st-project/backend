@@ -2,11 +2,6 @@ CREATE DATABASE IF NOT EXISTS linkedin_db;
 
 USE linkedin_db;
 
-DROP TABLE IF EXISTS user_profiles;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -17,7 +12,9 @@ CREATE TABLE IF NOT EXISTS posts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
     image LONGBLOB,
-    created_at TIMESTAMP
+    created_at TIMESTAMP,
+    user_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comments (
@@ -50,10 +47,10 @@ INSERT INTO users (email, password) VALUES
 ('test2@example.com', 'password2'),
 ('test3@example.com', 'password3');
 
-INSERT INTO posts (content, image, created_at) VALUES
-('First post content', NULL , NOW()),
-('Second post content', NULL, NOW()),
-('Third post content', NULL, NOW());
+INSERT INTO posts (content, image, created_at, user_id) VALUES
+('First post content', NULL , NOW(), 1),
+('Second post content', NULL, NOW(), 2),
+('Third post content', NULL, NOW(), 3);
 
 INSERT INTO comments (comment_content, post_id) VALUES
 ('첫번째 게시물의 댓글입니다', 1),

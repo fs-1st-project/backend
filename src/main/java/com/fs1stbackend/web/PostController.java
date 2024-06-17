@@ -1,6 +1,7 @@
 package com.fs1stbackend.web;
 
 import com.fs1stbackend.dto.PostDTO;
+import com.fs1stbackend.dto.PostResponseDTO;
 import com.fs1stbackend.service.PostService;
 import com.fs1stbackend.service.jwt.JwtTokenUtility;
 import io.jsonwebtoken.Claims;
@@ -27,31 +28,8 @@ public class PostController {
         return ResponseEntity.ok("게시글 작성이 성공적으로 완료되었습니다.");
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<PostDTO> updatePost(@RequestHeader("Authorization") String token, @PathVariable Long id, @RequestBody PostDTO postDTO) {
-//        Claims claims = JwtTokenUtility.extractClaims(token.substring(7));
-//        String email = claims.getSubject();
-//        // Assuming user validation logic here
-//        return ResponseEntity.ok(postService.updatePost(id, postDTO));
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<Void> deletePost(@RequestHeader("Authorization") String token, @PathVariable Long id) {
-//        Claims claims = JwtTokenUtility.extractClaims(token.substring(7));
-//        String email = claims.getSubject();
-//        // Assuming user validation logic here
-//        postService.deletePost(id);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<PostDTO> getPost(@PathVariable Long id) {
-//        return ResponseEntity.ok(postService.getPost(id));
-//    }
-//
-//    @GetMapping("/all")
-//    public ResponseEntity<List<PostDTO>> getAllPosts() {
-//        return ResponseEntity.ok(postService.getAllPosts());
-//    }
-
+    @GetMapping("/read")
+    public ResponseEntity<List<PostResponseDTO>> getAllPost() {
+        return ResponseEntity.ok(postService.getAllPost());
+    }
 }
