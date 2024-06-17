@@ -26,6 +26,7 @@ public class SecurityConfig {
                                     .requestMatchers("/api/users/{uid}/profile").permitAll()
                                     .requestMatchers("/post/*").permitAll()
                                     .requestMatchers("/post/*/*").permitAll()
+                                    .requestMatchers("/comment/*/*").permitAll()
                                     .anyRequest().authenticated()// 그 외의 모든 요청은 인증 필요
                     );
 
