@@ -16,6 +16,7 @@ public class PostResponseDTO {
     private String content;
     private byte[] image;
     private Date createdAt;
+    private Long userId;
 
     private byte[] profilePicture;
     private String fullName;
@@ -25,6 +26,7 @@ public class PostResponseDTO {
         this.content = post.getContent();
         this.image = post.getImage();
         this.createdAt = post.getCreatedAt();
+        this.userId = post.getUserId();
         this.profilePicture = userProfile.getProfilePicture();
         this.fullName = userProfile.getFullName();
         this.introduction = userProfile.getIntroduction();
