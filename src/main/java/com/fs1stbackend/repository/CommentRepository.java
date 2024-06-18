@@ -47,5 +47,10 @@ public class CommentRepository {
         return rowsAffected > 0 ? "Comment update successful" : "Comment update failed";
     }
 
+    public String deleteComment(Long postId, Long commentId){
+        String sql = "DELETE FROM comments WHERE post_id = ? AND id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, postId, commentId);
+        return rowsAffected > 0 ? "Comment delete successful" : "Comment Delete failed";
+    }
 
 }

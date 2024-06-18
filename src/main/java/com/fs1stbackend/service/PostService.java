@@ -51,7 +51,7 @@ public class PostService {
 
     public String updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
         String content = postContentUpdateDTO.getContent();
-        String isPostUpdateSuccess = "";
+        String isPostUpdateSuccess = "해당 게시글 수정에 실패하였습니다";
 
         try {
             if (content != null && !content.isEmpty()) {
@@ -67,7 +67,7 @@ public class PostService {
     }
 
     public String deletePost(@PathVariable Long postId) {
-        String deleteResponse = "";
+        String deleteResponse = "해당 게시글 삭제에 실패하였습니다";
 
         try {
             deleteResponse = postRepository.deletePost(postId);

@@ -35,7 +35,7 @@ public class PostController {
     }
 
     @PutMapping("/update/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
+    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
         String isPostUpdateSuccess = postService.updatePost(postId, postContentUpdateDTO);
 
         if (isPostUpdateSuccess.equals("Post update failed")) {
@@ -45,7 +45,7 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         String isDeleteSuccess = postService.deletePost(postId);
 
         if (isDeleteSuccess.equals("Post delete failed")) {
