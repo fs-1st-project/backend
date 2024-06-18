@@ -33,12 +33,20 @@ public class CommentController {
     public ResponseEntity<String> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentContentUpdateDTO commentContentUpdateDTO) {
 
         String isCommentUpdateSuccess = commentService.updateComment(postId, commentId, commentContentUpdateDTO);
-        System.out.println("업데이트 댓글 컨트롤러에 닿았습니다");
         if(isCommentUpdateSuccess.equals("Comment update failed")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isCommentUpdateSuccess);
         }
         return ResponseEntity.ok(isCommentUpdateSuccess);
     }
 
+    @DeleteMapping("/delete/{postId}/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId){
+        String isDeleteSuccess = commentService.deleteComment(postId, commentId);
+
+        if (isDeleteSuccess.equals("Comment delete failed")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isDeleteSuccess);
+        }
+        return ResponseEntity.ok(isDeleteSuccess);
+    }
 
 }

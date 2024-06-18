@@ -48,7 +48,7 @@ public class CommentService {
 
     public String updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentContentUpdateDTO commentContentUpdateDTO){
         String content = commentContentUpdateDTO.getCommentContent();
-        String isCommentUpdateSuccess = "";
+        String isCommentUpdateSuccess = "해당 게시글의 댓글 수정에 실패하였습니다";
 
         try {
             if (content != null && !content.isEmpty()) {
@@ -62,4 +62,17 @@ public class CommentService {
         }
         return isCommentUpdateSuccess;
     }
+
+    public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId){
+        String deleteResponse = "해당 게시글의 댓글 삭제에 실패하였습니다";
+
+        try {
+            deleteResponse = commentRepository.deleteComment(postId, commentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("해당 게시글에 댓글 삭제 서비스 로직 중 예외 발생");
+        }
+        return deleteResponse;
+    }
+
 }
