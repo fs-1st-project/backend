@@ -1,9 +1,6 @@
 package com.fs1stbackend.web;
 
-import com.fs1stbackend.dto.CommentAllResponseDTO;
-import com.fs1stbackend.dto.CommentCreateDTO;
-import com.fs1stbackend.dto.PostDTO;
-import com.fs1stbackend.dto.PostResponseDTO;
+import com.fs1stbackend.dto.*;
 import com.fs1stbackend.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,5 +29,24 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllComment(postId));
     }
 
+    @PutMapping("/update/{postId}/{commentId}")
+    public ResponseEntity<String> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentContentUpdateDTO commentContentUpdateDTO) {
+
+        String isCommentUpdateSuccess = commentService.updateComment(postId, commentId, commentContentUpdateDTO);
+        if(isCommentUpdateSuccess.equals("Comment update failed")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isCommentUpdateSuccess);
+        }
+        return ResponseEntity.ok(isCommentUpdateSuccess);
+    }
+
+    @DeleteMapping("/delete/{postId}/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId){
+        String isDeleteSuccess = commentService.deleteComment(postId, commentId);
+
+        if (isDeleteSuccess.equals("Comment delete failed")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isDeleteSuccess);
+        }
+        return ResponseEntity.ok(isDeleteSuccess);
+    }
 
 }

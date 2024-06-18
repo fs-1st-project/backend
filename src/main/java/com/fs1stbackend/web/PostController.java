@@ -23,6 +23,7 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestHeader("Authorization") String token, @RequestBody PostDTO postDTO) {
+        System.out.println("클라이언트 게시물 작성 컨트롤러에 닿았습니다");
         if (postService.createPost(token,postDTO).isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 유저로는 게시글을 작성할 수 없습니다.");
         }
@@ -35,21 +36,21 @@ public class PostController {
     }
 
     @PutMapping("/update/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
-        String isUpdateSuccess = postService.updatePost(postId, postContentUpdateDTO);
+    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
+        String isPostUpdateSuccess = postService.updatePost(postId, postContentUpdateDTO);
 
-        if (isUpdateSuccess.equals("Update failed")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isUpdateSuccess);
+        if (isPostUpdateSuccess.equals("Post update failed")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isPostUpdateSuccess);
         }
-        return ResponseEntity.ok(isUpdateSuccess);
+        return ResponseEntity.ok(isPostUpdateSuccess);
     }
 
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         String isDeleteSuccess = postService.deletePost(postId);
 
-        if (isDeleteSuccess.equals("Delete failed")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isDeleteSuccess);
+        if (isDeleteSuccess.equals("Post delete failed")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(isDeleteSuccess);
         }
         return ResponseEntity.ok(isDeleteSuccess);
     }

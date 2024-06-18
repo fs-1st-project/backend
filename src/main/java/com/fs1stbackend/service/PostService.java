@@ -5,6 +5,7 @@ import com.fs1stbackend.dto.PostDTO;
 import com.fs1stbackend.dto.PostResponseDTO;
 import com.fs1stbackend.model.EntirePost;
 import com.fs1stbackend.repository.PostRepository;
+import com.fs1stbackend.service.exception.NoContentException;
 import com.fs1stbackend.service.jwt.JwtTokenUtility;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
@@ -50,23 +51,23 @@ public class PostService {
 
     public String updatePost(@PathVariable Long postId, @RequestBody PostContentUpdateDTO postContentUpdateDTO) {
         String content = postContentUpdateDTO.getContent();
-        String isUpdateSuccess = "";
+        String isPostUpdateSuccess = "해당 게시글 수정에 실패하였습니다";
 
         try {
             if (content != null && !content.isEmpty()) {
-                isUpdateSuccess = postRepository.updatePost(postId, content);
+                isPostUpdateSuccess = postRepository.updatePost(postId, content);
             } else {
-                throw new IllegalArgumentException("Content cannot be null or empty");
+                throw new NoContentException("수정 할 게시글의 내용이 없습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("게시글 업데이트 서비스 로직 중 예외 발생");
         }
-        return isUpdateSuccess;
+        return isPostUpdateSuccess;
     }
 
     public String deletePost(@PathVariable Long postId) {
-        String deleteResponse = "";
+        String deleteResponse = "해당 게시글 삭제에 실패하였습니다";
 
         try {
             deleteResponse = postRepository.deletePost(postId);
