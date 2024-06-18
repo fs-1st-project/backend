@@ -31,13 +31,20 @@ public class CommentRepository {
     }
 
     public List<EntireComment> getAllComment(Long postId) {
-        String allCommentSql = "SELECT c.comment_content, c.created_at, f.profile_picture, f.full_name, f.introduction " +
+        String allCommentSql = "SELECT c.id, c.comment_content, c.created_at, c.user_id, f.profile_picture, f.full_name, f.introduction " +
                                 "FROM comments c " +
                                 "JOIN users u ON c.user_id = u.id " +
                                 "JOIN user_profiles f ON f.user_id = u.id " +
                                 "WHERE c.post_id = ?";
 
         return jdbcTemplate.query(allCommentSql, new Object[]{postId}, new EntireCommentRowMapper());
+    }
+
+    public String updateComment(Long postId, Long commentId, String content) {
+        String sql = "UPDATE comments SET comment_content = ? WHERE post_id = ? AND id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, content, postId, commentId);
+
+        return rowsAffected > 0 ? "Comment update successful" : "Comment update failed";
     }
 
 

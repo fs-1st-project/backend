@@ -13,8 +13,10 @@ public class EntireCommentRowMapper implements RowMapper<EntireComment> {
     @Override
     public EntireComment mapRow(ResultSet rs, int rowNum) throws SQLException{
         Comment comment = Comment.builder()
+                        .id(rs.getLong("c.id"))
                         .commentContent(rs.getString("c.comment_content"))
                         .createdAt(rs.getTimestamp("c.created_at"))
+                        .userId(rs.getLong("c.user_id"))
                         .build();
 
         User user = User.builder()
