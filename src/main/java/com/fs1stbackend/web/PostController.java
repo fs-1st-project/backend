@@ -23,6 +23,7 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createPost(@RequestHeader("Authorization") String token, @RequestBody PostDTO postDTO) {
+        System.out.println("클라이언트 게시물 작성 컨트롤러에 닿았습니다");
         if (postService.createPost(token,postDTO).isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 유저로는 게시글을 작성할 수 없습니다.");
         }
