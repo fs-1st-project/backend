@@ -8,6 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -47,11 +51,23 @@ public class GoogleUserRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{userId}, new RowMapper<GoogleUserProfileDTO>() {
             @Override
             public GoogleUserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                // Get profile picture as Base64 string
+                String profilePictureBase64 = null;
+                if (rs.getBlob("profile_picture") != null) {
+                    profilePictureBase64 = convertBlobToBase64(rs.getBlob("profile_picture"));
+                }
+
+                // Get profile background picture as Base64 string
+                String profileBackgroundPictureBase64 = null;
+                if (rs.getBlob("profile_background_picture") != null) {
+                    profileBackgroundPictureBase64 = convertBlobToBase64(rs.getBlob("profile_background_picture"));
+                }
+
                 return new GoogleUserProfileDTO(
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getString("profile_picture"),
-                        rs.getString("profile_background_picture"),
+                        profilePictureBase64,
+                        profileBackgroundPictureBase64,
                         rs.getString("full_name"),
                         rs.getString("introduction"),
                         rs.getString("bio"),
@@ -62,6 +78,24 @@ public class GoogleUserRepository {
             }
         });
     }
+
+    // Helper method to convert Blob to Base64 string
+    private String convertBlobToBase64(Blob blob) {
+        try (InputStream inputStream = blob.getBinaryStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            byte[] imageBytes = outputStream.toByteArray();
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public void updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         String updateSql = "UPDATE user_profiles up " +
@@ -89,8 +123,6 @@ public class GoogleUserRepository {
             String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
             profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
         }
-
-        // Similarly, handle profile background picture here
 
         jdbcTemplate.update(updateSql,
                 profileUpdateDTO.getFullName(),
