@@ -28,6 +28,7 @@ public class SecurityConfig {
                                     .requestMatchers("/post/*").permitAll()
                                     .requestMatchers("/post/*/*").permitAll()
                                     .requestMatchers("/comment/*/*").permitAll()
+                                    .requestMatchers("/comment/*/*/*").permitAll()
                                     .anyRequest().authenticated()// 그 외의 모든 요청은 인증 필요
                     );
 

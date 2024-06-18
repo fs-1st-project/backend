@@ -64,13 +64,13 @@ public class PostRepository {
         String sql = "UPDATE posts SET content = ? WHERE id = ?";
 
         int rowsAffected = jdbcTemplate.update(sql, content, postId);
-        return rowsAffected > 0 ? "Update successful" : "Update failed";
+        return rowsAffected > 0 ? "Post update successful" : "Post Update failed";
     }
 
     public String deletePost(Long postId) {
         String sql = "DELETE FROM posts WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, postId);
-        return rowsAffected > 0 ? "Delete successful" : "Delete failed";
+        return rowsAffected > 0 ? "Post delete successful" : "Post Delete failed";
     }
 }
 

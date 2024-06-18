@@ -40,5 +40,12 @@ public class CommentRepository {
         return jdbcTemplate.query(allCommentSql, new Object[]{postId}, new EntireCommentRowMapper());
     }
 
+    public String updateComment(Long postId, Long commentId, String content) {
+        String sql = "UPDATE comments SET comment_content = ? WHERE post_id = ? AND id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, content, postId, commentId);
+
+        return rowsAffected > 0 ? "Comment update successful" : "Comment update failed";
+    }
+
 
 }
