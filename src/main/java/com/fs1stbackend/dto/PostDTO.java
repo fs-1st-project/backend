@@ -14,15 +14,17 @@ public class PostDTO {
     private Long id;
     private String content;
     private String image;
-    private Date created_at;
+    private Date createdAt;
+    private Long userId;
 
     public PostDTO() {
     }
 
-    public PostDTO(Long id, String content, String image, Date created_at) {
+    public PostDTO(Long id, String content, String image, Date createdAt, Long userId) {
         this.id = id;
         this.content = content;
         this.image = image;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
+        this.userId = userId;
     }
 }
