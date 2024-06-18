@@ -2,6 +2,7 @@ package com.fs1stbackend.repository;
 
 import com.fs1stbackend.dto.GoogleUserProfileDTO;
 import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
+import com.fs1stbackend.dto.UserAndUserProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Base64;
 
 @Repository
 public class GoogleUserRepository {
@@ -47,8 +50,8 @@ public class GoogleUserRepository {
                 return new GoogleUserProfileDTO(
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getBytes("profile_picture"),
-                        rs.getBytes("profile_background_picture"),
+                        rs.getString("profile_picture"),
+                        rs.getString("profile_background_picture"),
                         rs.getString("full_name"),
                         rs.getString("introduction"),
                         rs.getString("bio"),
@@ -73,6 +76,22 @@ public class GoogleUserRepository {
                 "    up.profile_background_picture = ? " +
                 "WHERE u.id = ?";
 
+        byte[] profilePicture = null;
+        if (profileUpdateDTO.getProfilePicture() != null) {
+            String base64Url = profileUpdateDTO.getProfilePicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            profilePicture = Base64.getDecoder().decode(pureBase64Url);
+        }
+
+        byte[] profileBackgroundPicture = null;
+        if (profileUpdateDTO.getProfileBackgroundPicture() != null) {
+            String base64Url = profileUpdateDTO.getProfileBackgroundPicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
+        }
+
+        // Similarly, handle profile background picture here
+
         jdbcTemplate.update(updateSql,
                 profileUpdateDTO.getFullName(),
                 profileUpdateDTO.getIntroduction(),
@@ -80,9 +99,10 @@ public class GoogleUserRepository {
                 profileUpdateDTO.getEducation(),
                 profileUpdateDTO.getLocation(),
                 profileUpdateDTO.getCertification(),
-                profileUpdateDTO.getProfilePicture(),
-                profileUpdateDTO.getProfileBackgroundPicture(),
+                profilePicture, // Use profilePicture here instead of base64Url
+                profileBackgroundPicture,
                 userId);
     }
+
 
 }

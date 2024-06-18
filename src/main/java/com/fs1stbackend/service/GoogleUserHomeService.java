@@ -26,7 +26,6 @@ public class GoogleUserHomeService {
         Long userId = googleUserRepository.findUserIdByUid(uid);
         googleUserRepository.updateUserProfile(userId, profileUpdateDTO);
         GoogleUserProfileDTO updatedProfile = googleUserRepository.getUserProfileById(userId);
-        System.out.println("업데이트된 프로필 정보: " + updatedProfile);
         return updatedProfile;
     }
 

@@ -28,7 +28,6 @@ public class GoogleUserController {
     //@RequestHeader("Authorization") String token 뒤에 이거 추가해주기
     @PutMapping("/{uid}/profile")
     public GoogleUserProfileDTO updateUserProfile(@PathVariable String uid, @RequestBody GoogleUserProfileUpdateDTO profileUpdateDTO) {
-        System.out.println("Received PUT request for updating profile. UID: " + uid);
         return googleUserService.updateUserProfile(uid, profileUpdateDTO);
     }
 
