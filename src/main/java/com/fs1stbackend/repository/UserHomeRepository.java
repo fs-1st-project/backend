@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Optional;
 
 @Repository
@@ -55,6 +56,20 @@ public class UserHomeRepository {
                 "    up.profile_background_picture = ? " +
                 "WHERE u.id = ?";
 
+        byte[] profilePicture = null;
+        if (profileUpdateDTO.getProfilePicture() != null) {
+            String base64Url = profileUpdateDTO.getProfilePicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            profilePicture = Base64.getDecoder().decode(pureBase64Url);
+        }
+
+        byte[] profileBackgroundPicture = null;
+        if (profileUpdateDTO.getProfileBackgroundPicture() != null) {
+            String base64Url = profileUpdateDTO.getProfileBackgroundPicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
+        }
+
         jdbcTemplate.update(updateSql,
                 profileUpdateDTO.getFullName(),
                 profileUpdateDTO.getIntroduction(),
@@ -62,8 +77,8 @@ public class UserHomeRepository {
                 profileUpdateDTO.getEducation(),
                 profileUpdateDTO.getLocation(),
                 profileUpdateDTO.getCertification(),
-                profileUpdateDTO.getProfilePicture(),
-                profileUpdateDTO.getProfileBackgroundPicture(),
+                profilePicture,
+                profileBackgroundPicture,
                 userId);
     }
     }
