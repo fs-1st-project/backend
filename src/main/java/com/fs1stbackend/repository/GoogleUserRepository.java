@@ -14,8 +14,10 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 @Repository
 public class GoogleUserRepository {
@@ -52,22 +54,22 @@ public class GoogleUserRepository {
             @Override
             public GoogleUserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 // Get profile picture as Base64 string
-                String profilePictureBase64 = null;
-                if (rs.getBlob("profile_picture") != null) {
-                    profilePictureBase64 = convertBlobToBase64(rs.getBlob("profile_picture"));
-                }
-
-                // Get profile background picture as Base64 string
-                String profileBackgroundPictureBase64 = null;
-                if (rs.getBlob("profile_background_picture") != null) {
-                    profileBackgroundPictureBase64 = convertBlobToBase64(rs.getBlob("profile_background_picture"));
-                }
+//                String profilePictureBase64 = null;
+//                if (rs.getBlob("profile_picture") != null) {
+//                    profilePictureBase64 = convertBlobToBase64(rs.getBlob("profile_picture"));
+//                }
+//
+//                // Get profile background picture as Base64 string
+//                String profileBackgroundPictureBase64 = null;
+//                if (rs.getBlob("profile_background_picture") != null) {
+//                    profileBackgroundPictureBase64 = convertBlobToBase64(rs.getBlob("profile_background_picture"));
+//                }
 
                 return new GoogleUserProfileDTO(
                         rs.getString("email"),
                         rs.getString("password"),
-                        profilePictureBase64,
-                        profileBackgroundPictureBase64,
+                        rs.getString("profile_picture"),
+                        rs.getString("profile_background_picture"),
                         rs.getString("full_name"),
                         rs.getString("introduction"),
                         rs.getString("bio"),
@@ -138,6 +140,9 @@ public class GoogleUserRepository {
         System.out.println(rowsAffected);
         return rowsAffected > 0 ? "update success" : "update failed";
     }
+
+
+
 
 
 

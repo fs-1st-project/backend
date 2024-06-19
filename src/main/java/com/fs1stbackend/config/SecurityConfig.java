@@ -21,7 +21,7 @@ public class SecurityConfig {
                                     .requestMatchers("/register").permitAll()// 회원가입 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/auth/login").permitAll()
                                     .requestMatchers("/home/user").permitAll()
-                                    .requestMatchers("/home/{email}/profile").permitAll()
+                                    .requestMatchers("/home/update/{email}/profile").permitAll()
                                     .requestMatchers("/firebase/auth/google").permitAll() //구글 로그인 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/firebase/auth/user/**").permitAll() //받은 uid 로그인 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/api/users/*/*").permitAll()
