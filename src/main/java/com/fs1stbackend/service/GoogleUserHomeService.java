@@ -3,6 +3,7 @@ package com.fs1stbackend.service;
 import com.fs1stbackend.dto.GoogleUserProfileDTO;
 import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
 import com.fs1stbackend.repository.GoogleUserRepository;
+import com.fs1stbackend.service.exception.NoContentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +23,24 @@ public class GoogleUserHomeService {
         return googleUserRepository.getUserProfileById(userId);
     }
 
-    public GoogleUserProfileDTO updateUserProfile(String uid, GoogleUserProfileUpdateDTO profileUpdateDTO) {
-        Long userId = googleUserRepository.findUserIdByUid(uid);
-        googleUserRepository.updateUserProfile(userId, profileUpdateDTO);
-        GoogleUserProfileDTO updatedProfile = googleUserRepository.getUserProfileById(userId);
-        return updatedProfile;
+    public String updateUserProfile(String uid, GoogleUserProfileUpdateDTO profileUpdateDTO) {
+        String username = profileUpdateDTO.getFullName();
+        String isProfileUpdateSuccess = "";
+        //GoogleUserProfileDTO updatedProfile = new GoogleUserProfileDTO();
+
+        try {
+            if (username != null && !username.isEmpty()) {
+                Long userId = googleUserRepository.findUserIdByUid(uid);
+                isProfileUpdateSuccess = googleUserRepository.updateUserProfile(userId, profileUpdateDTO);
+            } else {
+                isProfileUpdateSuccess = "해당 프로필 수정에 실패하였습니다";
+                    throw new Exception("해당 프로필 수정에 실패하였습니다");
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("게시글 업데이트 서비스 로직 중 예외 발생");
+        }
+        return isProfileUpdateSuccess;
     }
 
 

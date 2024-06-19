@@ -24,7 +24,8 @@ public class SecurityConfig {
                                     .requestMatchers("/home/{email}/profile").permitAll()
                                     .requestMatchers("/firebase/auth/google").permitAll() //구글 로그인 엔드포인트에 대한 접근 허용
                                     .requestMatchers("/firebase/auth/user/**").permitAll() //받은 uid 로그인 엔드포인트에 대한 접근 허용
-                                    .requestMatchers("/api/users/{uid}/profile").permitAll()
+                                    .requestMatchers("/api/users/*/*").permitAll()
+                                    .requestMatchers("/api/users/*/*/*").permitAll()
                                     .requestMatchers("/post/*").permitAll()
                                     .requestMatchers("/post/*/*").permitAll()
                                     .requestMatchers("/comment/*/*").permitAll()

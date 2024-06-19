@@ -97,7 +97,7 @@ public class GoogleUserRepository {
     }
 
 
-    public void updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
+    public String updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         String updateSql = "UPDATE user_profiles up " +
                 "JOIN users u ON u.id = up.user_id " +
                 "SET up.full_name = ?, " +
@@ -124,7 +124,7 @@ public class GoogleUserRepository {
             profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
         }
 
-        jdbcTemplate.update(updateSql,
+        int rowsAffected = jdbcTemplate.update(updateSql,
                 profileUpdateDTO.getFullName(),
                 profileUpdateDTO.getIntroduction(),
                 profileUpdateDTO.getBio(),
@@ -134,7 +134,12 @@ public class GoogleUserRepository {
                 profilePicture, // Use profilePicture here instead of base64Url
                 profileBackgroundPicture,
                 userId);
+
+        System.out.println(rowsAffected);
+        return rowsAffected > 0 ? "update success" : "update failed";
     }
+
+
 
 
 }

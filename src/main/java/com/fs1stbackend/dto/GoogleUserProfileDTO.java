@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GoogleUserProfileDTO {
     private String email;
     private String password;
-    private  String profilePicture;
+    private String profilePicture;
     private String profileBackgroundPicture;
     private String fullName;
     private String introduction;
