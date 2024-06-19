@@ -25,23 +25,32 @@ public class GoogleUserHomeService {
 
     public String updateUserProfile(String uid, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         String username = profileUpdateDTO.getFullName();
+        String introduction = profileUpdateDTO.getIntroduction();
+        String bio = profileUpdateDTO.getBio();
+        String education = profileUpdateDTO.getEducation();
+        String location = profileUpdateDTO.getLocation();
+        String certification = profileUpdateDTO.getCertification();
+        String profilePicture = profileUpdateDTO.getProfilePicture();
+        String profileBackgroundPicture = profileUpdateDTO.getProfileBackgroundPicture();
+
         String isProfileUpdateSuccess = "";
         //GoogleUserProfileDTO updatedProfile = new GoogleUserProfileDTO();
 
         try {
-            if (username != null && !username.isEmpty()) {
+            //하나라도 값이 들어있으면 삽입
+            if (!username.isEmpty() || !introduction.isEmpty() || !bio.isEmpty() ||
+                    !education.isEmpty() || !location.isEmpty() || !certification.isEmpty() ||
+                    !profilePicture.isEmpty() || !profileBackgroundPicture.isEmpty()) {
                 Long userId = googleUserRepository.findUserIdByUid(uid);
                 isProfileUpdateSuccess = googleUserRepository.updateUserProfile(userId, profileUpdateDTO);
             } else {
                 isProfileUpdateSuccess = "해당 프로필 수정에 실패하였습니다";
-                    throw new Exception("해당 프로필 수정에 실패하였습니다");
-                }
+                throw new Exception("해당 프로필 수정에 실패하였습니다");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("게시글 업데이트 서비스 로직 중 예외 발생");
         }
         return isProfileUpdateSuccess;
     }
-
-
 }

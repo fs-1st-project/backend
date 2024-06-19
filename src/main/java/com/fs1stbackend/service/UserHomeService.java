@@ -49,10 +49,20 @@ public class UserHomeService {
 
     public String updateUserProfile(String email, UserAndUserProfileUpdateDTO profileUpdateDTO) {
         String username = profileUpdateDTO.getFullName();
+        String introduction = profileUpdateDTO.getIntroduction();
+        String bio = profileUpdateDTO.getBio();
+        String education = profileUpdateDTO.getEducation();
+        String location = profileUpdateDTO.getLocation();
+        String certification = profileUpdateDTO.getCertification();
+        String profilePicture = profileUpdateDTO.getProfilePicture();
+        String profileBackgroundPicture = profileUpdateDTO.getProfileBackgroundPicture();
+
         String isProfileUpdateSuccess = "";
 
         try {
-            if (username != null && !username.isEmpty()) {
+            if (!username.isEmpty() || !introduction.isEmpty() || !bio.isEmpty() ||
+                    !education.isEmpty() || !location.isEmpty() || !certification.isEmpty() ||
+                    !profilePicture.isEmpty() || !profileBackgroundPicture.isEmpty()) {
                 Long userId = userHomeRepository.findUserIdByEmail(email);
                 userHomeRepository.updateUserProfile(userId, profileUpdateDTO);
                 //UserAndUserProfile updatedUserAndUserProfile = userHomeRepository.findUserProfileAtHome(email);
