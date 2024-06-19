@@ -63,6 +63,7 @@ public class PostRepository {
         return entirePosts;
     }
 
+    @Transactional
     public String updatePost(Long postId, String content) {
         String sql = "UPDATE posts SET content = ? WHERE id = ?";
 
@@ -70,6 +71,7 @@ public class PostRepository {
         return rowsAffected > 0 ? "Post update successful" : "Post Update failed";
     }
 
+    @Transactional
     public String deletePost(Long postId) {
         String sql = "DELETE FROM posts WHERE id = ?";
         int rowsAffected = jdbcTemplate.update(sql, postId);

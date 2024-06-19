@@ -6,6 +6,7 @@ import com.fs1stbackend.model.EntirePost;
 import com.fs1stbackend.service.exception.UserNotFoundException;
 import com.fs1stbackend.service.mapper.EntireCommentRowMapper;
 import com.fs1stbackend.service.mapper.EntirePostRowMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ public class CommentRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Transactional
     public String createComment(Long postId, CommentCreateDTO commentCreateDTO){
         String createCommentSql = "INSERT INTO comments (comment_content, created_at, user_id, post_id) VALUES (?, ?, ?, ?)";
         try {
@@ -35,11 +37,13 @@ public class CommentRepository {
                                 "FROM comments c " +
                                 "JOIN users u ON c.user_id = u.id " +
                                 "JOIN user_profiles f ON f.user_id = u.id " +
-                                "WHERE c.post_id = ?";
+                                "WHERE c.post_id = ? " +
+                                "ORDER BY c.created_at DESC";
 
         return jdbcTemplate.query(allCommentSql, new Object[]{postId}, new EntireCommentRowMapper());
     }
 
+    @Transactional
     public String updateComment(Long postId, Long commentId, String content) {
         String sql = "UPDATE comments SET comment_content = ? WHERE post_id = ? AND id = ?";
         int rowsAffected = jdbcTemplate.update(sql, content, postId, commentId);
@@ -47,6 +51,7 @@ public class CommentRepository {
         return rowsAffected > 0 ? "Comment update successful" : "Comment update failed";
     }
 
+    @Transactional
     public String deleteComment(Long postId, Long commentId){
         String sql = "DELETE FROM comments WHERE post_id = ? AND id = ?";
         int rowsAffected = jdbcTemplate.update(sql, postId, commentId);
