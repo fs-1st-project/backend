@@ -20,8 +20,10 @@ public class GoogleUserHomeService {
 
     public GoogleUserProfileDTO getUserProfileByUid(String uid) {
         Long userId = googleUserRepository.findUserIdByUid(uid);
+        googleUserRepository.createUserProfileIfNeeded(userId.toString()); // userId를 String으로 변환하여 전달
         return googleUserRepository.getUserProfileById(userId);
     }
+
 
     public String updateUserProfile(String uid, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         String username = profileUpdateDTO.getFullName();
