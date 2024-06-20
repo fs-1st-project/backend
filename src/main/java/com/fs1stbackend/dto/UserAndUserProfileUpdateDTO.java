@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserAndUserProfileUpdateDTO {
-    private byte[] profilePicture;
-    private byte[] profileBackgroundPicture;
+    private String profilePicture;
+    private String profileBackgroundPicture;
     private String fullName;
     private String introduction;
     private String bio;

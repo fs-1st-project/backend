@@ -2,13 +2,24 @@ package com.fs1stbackend.repository;
 
 import com.fs1stbackend.dto.GoogleUserProfileDTO;
 import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
+import com.fs1stbackend.dto.UserAndUserProfileDTO;
+import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 @Repository
 public class GoogleUserRepository {
@@ -44,6 +55,7 @@ public class GoogleUserRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{userId}, new RowMapper<GoogleUserProfileDTO>() {
             @Override
             public GoogleUserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+
                 return new GoogleUserProfileDTO(
                         rs.getString("email"),
                         rs.getString("password"),
@@ -60,29 +72,100 @@ public class GoogleUserRepository {
         });
     }
 
-    public void updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
-        String updateSql = "UPDATE user_profiles up " +
-                "JOIN users u ON u.id = up.user_id " +
-                "SET up.full_name = ?, " +
-                "    up.introduction = ?, " +
-                "    up.bio = ?, " +
-                "    up.education = ?, " +
-                "    up.location = ?, " +
-                "    up.certification = ?, " +
-                "    up.profile_picture = ?, " +
-                "    up.profile_background_picture = ? " +
-                "WHERE u.id = ?";
+//업데이트할 때 들어온 데이터만 잡아서 바꿔주기
+    public String updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
+        // SQL 쿼리문
+        StringBuilder updateSqlBuilder = new StringBuilder("UPDATE user_profiles up ");
+        updateSqlBuilder.append("JOIN users u ON u.id = up.user_id SET ");
 
-        jdbcTemplate.update(updateSql,
-                profileUpdateDTO.getFullName(),
-                profileUpdateDTO.getIntroduction(),
-                profileUpdateDTO.getBio(),
-                profileUpdateDTO.getEducation(),
-                profileUpdateDTO.getLocation(),
-                profileUpdateDTO.getCertification(),
-                profileUpdateDTO.getProfilePicture(),
-                profileUpdateDTO.getProfileBackgroundPicture(),
-                userId);
+        // 프로필 사진 처리
+        byte[] profilePicture = null;
+        //String profilePicture = "";
+        if (!StringUtils.isEmpty(profileUpdateDTO.getProfilePicture())) {
+            String base64Url = profileUpdateDTO.getProfilePicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            //profilePicture = pureBase64Url;
+            profilePicture = Base64.getDecoder().decode(pureBase64Url);
+            updateSqlBuilder.append("up.profile_picture = ?, ");
+        }
+
+        // 프로필 배경 사진 처리
+        byte[] profileBackgroundPicture = null;
+        //String profileBackgroundPicture = "";
+        if (!StringUtils.isEmpty(profileUpdateDTO.getProfileBackgroundPicture())) {
+            String base64Url = profileUpdateDTO.getProfileBackgroundPicture();
+            String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            //profileBackgroundPicture = pureBase64Url;
+            profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
+            updateSqlBuilder.append("up.profile_background_picture = ?, ");
+        }
+
+        // 나머지 업데이트 필드 처리
+        if (!StringUtils.isEmpty(profileUpdateDTO.getFullName())) {
+            updateSqlBuilder.append("up.full_name = ?, ");
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getIntroduction())) {
+            updateSqlBuilder.append("up.introduction = ?, ");
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getBio())) {
+            updateSqlBuilder.append("up.bio = ?, ");
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getEducation())) {
+            updateSqlBuilder.append("up.education = ?, ");
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getLocation())) {
+            updateSqlBuilder.append("up.location = ?, ");
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getCertification())) {
+            updateSqlBuilder.append("up.certification = ?, ");
+        }
+
+        // 마지막 콤마 제거
+        updateSqlBuilder.delete(updateSqlBuilder.length() - 2, updateSqlBuilder.length());
+
+        // WHERE 절 추가
+        updateSqlBuilder.append(" WHERE u.id = ?");
+
+        // Update 쿼리 실행
+        String updateSql = updateSqlBuilder.toString();
+        Object[] params = collectUpdateParams(profileUpdateDTO, profilePicture, profileBackgroundPicture, userId);
+        int rowsAffected = jdbcTemplate.update(updateSql, params);
+
+        // 업데이트 결과에 따른 반환 메시지
+        return rowsAffected > 0 ? "update success" : "update failed";
+    }
+
+    //GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId
+    private Object[] collectUpdateParams(GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId) {
+        // 파라미터 수집
+        // 여기서 profilePicture와 profileBackgroundPicture를 Object[]에 추가
+        List<Object> params = new ArrayList<>();
+        if (!StringUtils.isEmpty(profileUpdateDTO.getFullName())) {
+            params.add(profileUpdateDTO.getFullName());
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getIntroduction())) {
+            params.add(profileUpdateDTO.getIntroduction());
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getBio())) {
+            params.add(profileUpdateDTO.getBio());
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getEducation())) {
+            params.add(profileUpdateDTO.getEducation());
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getLocation())) {
+            params.add(profileUpdateDTO.getLocation());
+        }
+        if (!StringUtils.isEmpty(profileUpdateDTO.getCertification())) {
+            params.add(profileUpdateDTO.getCertification());
+        }
+        if (profilePicture != null) {
+            params.add(profilePicture);
+        }
+        if (profileBackgroundPicture != null) {
+            params.add(profileBackgroundPicture);
+        }
+        params.add(userId);
+        return params.toArray();
     }
 
 }
