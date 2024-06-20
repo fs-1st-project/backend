@@ -27,6 +27,27 @@ public class GoogleUserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public void createUserProfileIfNeeded(String userId) {
+        // 이미 존재하는지 확인
+        String checkProfileSql = "SELECT COUNT(*) FROM user_profiles WHERE user_id = ?";
+        int count = jdbcTemplate.queryForObject(checkProfileSql, Integer.class, userId);
+
+        if (count == 0) {
+            // 사용자 프로필 생성
+            String userEmailPrefix = findUserEmailPrefixById(userId); // 유저 테이블에서 이메일의 @ 이전 부분 가져오기
+            String insertSql = "INSERT INTO user_profiles (user_id, full_name) VALUES (?, ?)";
+            jdbcTemplate.update(insertSql, userId, userEmailPrefix); // full_name 필드에 @ 이전 부분 설정
+        } else {
+            // 이미 프로필이 있는 경우 처리 (필요 시)
+            System.out.println("User profile already exists for userId: " + userId);
+        }
+    }
+
+    private String findUserEmailPrefixById(String userId) {
+        String sql = "SELECT SUBSTRING_INDEX(email, '@', 1) AS emailPrefix FROM users WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{userId}, String.class);
+    }
+
     public void save(String email, String uid) {
         // 이메일 존재 여부 확인 쿼리
         String checkEmailSql = "SELECT COUNT(*) FROM users WHERE email = ?";
@@ -72,7 +93,7 @@ public class GoogleUserRepository {
         });
     }
 
-//업데이트할 때 들어온 데이터만 잡아서 바꿔주기
+    //업데이트할 때 들어온 데이터만 잡아서 바꿔주기
     public String updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         // SQL 쿼리문
         StringBuilder updateSqlBuilder = new StringBuilder("UPDATE user_profiles up ");
