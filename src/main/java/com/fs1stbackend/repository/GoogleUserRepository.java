@@ -3,6 +3,7 @@ package com.fs1stbackend.repository;
 import com.fs1stbackend.dto.GoogleUserProfileDTO;
 import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
 import com.fs1stbackend.dto.UserAndUserProfileDTO;
+import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -54,11 +55,12 @@ public class GoogleUserRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{userId}, new RowMapper<GoogleUserProfileDTO>() {
             @Override
             public GoogleUserProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+
                 return new GoogleUserProfileDTO(
                         rs.getString("email"),
                         rs.getString("password"),
-                        rs.getString("profile_picture"),
-                        rs.getString("profile_background_picture"),
+                        rs.getBytes("profile_picture"),
+                        rs.getBytes("profile_background_picture"),
                         rs.getString("full_name"),
                         rs.getString("introduction"),
                         rs.getString("bio"),
@@ -70,7 +72,7 @@ public class GoogleUserRepository {
         });
     }
 
-
+//업데이트할 때 들어온 데이터만 잡아서 바꿔주기
     public String updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         // SQL 쿼리문
         StringBuilder updateSqlBuilder = new StringBuilder("UPDATE user_profiles up ");
@@ -78,18 +80,22 @@ public class GoogleUserRepository {
 
         // 프로필 사진 처리
         byte[] profilePicture = null;
+        //String profilePicture = "";
         if (!StringUtils.isEmpty(profileUpdateDTO.getProfilePicture())) {
             String base64Url = profileUpdateDTO.getProfilePicture();
             String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            //profilePicture = pureBase64Url;
             profilePicture = Base64.getDecoder().decode(pureBase64Url);
             updateSqlBuilder.append("up.profile_picture = ?, ");
         }
 
         // 프로필 배경 사진 처리
         byte[] profileBackgroundPicture = null;
+        //String profileBackgroundPicture = "";
         if (!StringUtils.isEmpty(profileUpdateDTO.getProfileBackgroundPicture())) {
             String base64Url = profileUpdateDTO.getProfileBackgroundPicture();
             String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+            //profileBackgroundPicture = pureBase64Url;
             profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
             updateSqlBuilder.append("up.profile_background_picture = ?, ");
         }
@@ -129,6 +135,7 @@ public class GoogleUserRepository {
         return rowsAffected > 0 ? "update success" : "update failed";
     }
 
+    //GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId
     private Object[] collectUpdateParams(GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId) {
         // 파라미터 수집
         // 여기서 profilePicture와 profileBackgroundPicture를 Object[]에 추가
@@ -160,4 +167,5 @@ public class GoogleUserRepository {
         params.add(userId);
         return params.toArray();
     }
+
 }
