@@ -27,37 +27,32 @@ public class UserHomeRepository {
     private JdbcTemplate jdbcTemplate;
 
     public UserUserProfile findUserProfileAtHome(String userEmail) {
-        String sql = "SELECT * FROM users WHERE email = ?  LIMIT 1";
-//        int userProfile;
+        String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+        User existingUser = jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
 
-        User existingUser =  jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
-        //유저 프로필 확인
-        if(existingUser != null) {
+        if (existingUser != null) {
             Long userId = existingUser.getId();
             String checkProfileSql = "SELECT COUNT(*) FROM user_profiles WHERE user_id = ?";
             int userProfileCount = jdbcTemplate.queryForObject(checkProfileSql, Integer.class, userId);
 
-            // 반환 할 유저 프로필
             UserProfile userProfile;
 
-            if(userProfileCount == 0) {
-                String insertSql = "INSERT INTO user_profiles (full_name) VALUES (?)";
-                jdbcTemplate.update(insertSql, userEmail);
+            if (userProfileCount == 0) {
+                String insertSql = "INSERT INTO user_profiles (user_id, full_name) VALUES (?, ?)";
+                jdbcTemplate.update(insertSql, userId, userEmail); // 유저 이메일을 이름으로 사용
 
-                String selectSql = "SELECT * FROM user_profiles WHERE full_name = ? LIMIT 1";
-                userProfile = jdbcTemplate.queryForObject(selectSql, new Object[]{userEmail}, new UserProfileRowMapper());
+                String selectSql = "SELECT * FROM user_profiles WHERE user_id = ? LIMIT 1";
+                userProfile = jdbcTemplate.queryForObject(selectSql, new Object[]{userId}, new UserProfileRowMapper());
             } else {
-                String selectSql = "SELECT * FROM user_profiles WHERE user_id = ?";
+                String selectSql = "SELECT * FROM user_profiles WHERE user_id = ? LIMIT 1";
                 userProfile = jdbcTemplate.queryForObject(selectSql, new Object[]{userId}, new UserProfileRowMapper());
             }
 
             UserUserProfile userUserProfile = new UserUserProfile(existingUser, userProfile);
             return userUserProfile;
-
         }
         return null;
-
-        }
+    }
 
     public Long findUserIdByEmail(String email) {
         String sql = "SELECT id FROM users WHERE email = ?";
