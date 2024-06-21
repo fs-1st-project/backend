@@ -58,7 +58,7 @@ public class UserHomeRepository {
     public String updateUserProfile(Long userId, UserAndUserProfileUpdateDTO profileUpdateDTO) {
         // SQL 쿼리문
         StringBuilder updateSqlBuilder = new StringBuilder("UPDATE user_profiles up ");
-        updateSqlBuilder.append("JOIN users u ON u.id = up.user_id SET ");
+        updateSqlBuilder.append("LEFT JOIN users u ON u.id = up.user_id SET ");
 
         // 프로필 사진 처리
         byte[] profilePicture = null;
@@ -79,23 +79,34 @@ public class UserHomeRepository {
         }
 
         // 나머지 업데이트 필드 처리
+        boolean hasFieldsToUpdate = false;
         if (!StringUtils.isEmpty(profileUpdateDTO.getFullName())) {
             updateSqlBuilder.append("up.full_name = ?, ");
+            hasFieldsToUpdate = true;
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getIntroduction())) {
             updateSqlBuilder.append("up.introduction = ?, ");
+            hasFieldsToUpdate = true;
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getBio())) {
             updateSqlBuilder.append("up.bio = ?, ");
+            hasFieldsToUpdate = true;
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getEducation())) {
             updateSqlBuilder.append("up.education = ?, ");
+            hasFieldsToUpdate = true;
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getLocation())) {
             updateSqlBuilder.append("up.location = ?, ");
+            hasFieldsToUpdate = true;
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getCertification())) {
             updateSqlBuilder.append("up.certification = ?, ");
+            hasFieldsToUpdate = true;
+        }
+
+        if (!hasFieldsToUpdate) {
+            return "no fields to update";
         }
 
         // 마지막 콤마 제거
@@ -115,8 +126,13 @@ public class UserHomeRepository {
 
     private Object[] collectUpdateParams(UserAndUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId) {
         // 파라미터 수집
-        // 여기서 profilePicture와 profileBackgroundPicture를 Object[]에 추가
         List<Object> params = new ArrayList<>();
+        if (profilePicture != null) {
+            params.add(profilePicture);
+        }
+        if (profileBackgroundPicture != null) {
+            params.add(profileBackgroundPicture);
+        }
         if (!StringUtils.isEmpty(profileUpdateDTO.getFullName())) {
             params.add(profileUpdateDTO.getFullName());
         }
@@ -134,12 +150,6 @@ public class UserHomeRepository {
         }
         if (!StringUtils.isEmpty(profileUpdateDTO.getCertification())) {
             params.add(profileUpdateDTO.getCertification());
-        }
-        if (profilePicture != null) {
-            params.add(profilePicture);
-        }
-        if (profileBackgroundPicture != null) {
-            params.add(profileBackgroundPicture);
         }
         params.add(userId);
         return params.toArray();
