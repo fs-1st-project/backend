@@ -28,17 +28,30 @@ public class UserHomeRepository {
 
     public UserUserProfile findUserProfileAtHome(String userEmail) {
         String sql = "SELECT * FROM users WHERE email = ?  LIMIT 1";
+//        int userProfile;
 
         User existingUser =  jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
         //유저 프로필 확인
         if(existingUser != null) {
             Long userId = existingUser.getId();
-            String checkProfileSql = "SELECT * FROM user_profiles WHERE user_id = ?";
+            String checkProfileSql = "SELECT COUNT(*) FROM user_profiles WHERE user_id = ?";
+            int userProfileCount = jdbcTemplate.queryForObject(checkProfileSql, Integer.class, userId);
 
-            List<UserProfile> userProfile = jdbcTemplate.query(checkProfileSql, new Object[]{userId}, new UserProfileRowMapper());
-            UserProfile existingUserProfile = userProfile.isEmpty() ? null : userProfile.get(0);
+            // 반환 할 유저 프로필
+            UserProfile userProfile;
 
-            UserUserProfile userUserProfile = new UserUserProfile(existingUser, existingUserProfile);
+            if(userProfileCount == 0) {
+                String insertSql = "INSERT INTO user_profiles (full_name) VALUES (?)";
+                jdbcTemplate.update(insertSql, userEmail);
+
+                String selectSql = "SELECT * FROM user_profiles WHERE full_name = ? LIMIT 1";
+                userProfile = jdbcTemplate.queryForObject(selectSql, new Object[]{userEmail}, new UserProfileRowMapper());
+            } else {
+                String selectSql = "SELECT * FROM user_profiles WHERE user_id = ?";
+                userProfile = jdbcTemplate.queryForObject(selectSql, new Object[]{userId}, new UserProfileRowMapper());
+            }
+
+            UserUserProfile userUserProfile = new UserUserProfile(existingUser, userProfile);
             return userUserProfile;
 
         }
