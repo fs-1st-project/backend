@@ -93,30 +93,25 @@ public class GoogleUserRepository {
         });
     }
 
-    //업데이트할 때 들어온 데이터만 잡아서 바꿔주기
     public String updateUserProfile(Long userId, GoogleUserProfileUpdateDTO profileUpdateDTO) {
         // SQL 쿼리문
         StringBuilder updateSqlBuilder = new StringBuilder("UPDATE user_profiles up ");
-        updateSqlBuilder.append("JOIN users u ON u.id = up.user_id SET ");
+        updateSqlBuilder.append("LEFT JOIN users u ON u.id = up.user_id SET ");
 
         // 프로필 사진 처리
         byte[] profilePicture = null;
-        //String profilePicture = "";
         if (!StringUtils.isEmpty(profileUpdateDTO.getProfilePicture())) {
             String base64Url = profileUpdateDTO.getProfilePicture();
             String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
-            //profilePicture = pureBase64Url;
             profilePicture = Base64.getDecoder().decode(pureBase64Url);
             updateSqlBuilder.append("up.profile_picture = ?, ");
         }
 
         // 프로필 배경 사진 처리
         byte[] profileBackgroundPicture = null;
-        //String profileBackgroundPicture = "";
         if (!StringUtils.isEmpty(profileUpdateDTO.getProfileBackgroundPicture())) {
             String base64Url = profileUpdateDTO.getProfileBackgroundPicture();
             String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
-            //profileBackgroundPicture = pureBase64Url;
             profileBackgroundPicture = Base64.getDecoder().decode(pureBase64Url);
             updateSqlBuilder.append("up.profile_background_picture = ?, ");
         }
@@ -159,8 +154,13 @@ public class GoogleUserRepository {
     //GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId
     private Object[] collectUpdateParams(GoogleUserProfileUpdateDTO profileUpdateDTO, byte[] profilePicture, byte[] profileBackgroundPicture, Long userId) {
         // 파라미터 수집
-        // 여기서 profilePicture와 profileBackgroundPicture를 Object[]에 추가
         List<Object> params = new ArrayList<>();
+        if (profilePicture != null) {
+            params.add(profilePicture);
+        }
+        if (profileBackgroundPicture != null) {
+            params.add(profileBackgroundPicture);
+        }
         if (!StringUtils.isEmpty(profileUpdateDTO.getFullName())) {
             params.add(profileUpdateDTO.getFullName());
         }
@@ -179,14 +179,9 @@ public class GoogleUserRepository {
         if (!StringUtils.isEmpty(profileUpdateDTO.getCertification())) {
             params.add(profileUpdateDTO.getCertification());
         }
-        if (profilePicture != null) {
-            params.add(profilePicture);
-        }
-        if (profileBackgroundPicture != null) {
-            params.add(profileBackgroundPicture);
-        }
         params.add(userId);
         return params.toArray();
     }
+
 
 }
