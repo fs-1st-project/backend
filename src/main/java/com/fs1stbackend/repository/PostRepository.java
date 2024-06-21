@@ -38,7 +38,9 @@ public class PostRepository {
                     String createPostSql = "INSERT INTO posts (content, image, created_at user_id) VALUES (?, ?, ?, ?)";
                     String base64Url = postDTO.getImage();
                     String pureBase64Url = base64Url.substring(base64Url.indexOf(",") + 1);
+
                     byte[] imageBytes = Base64.getDecoder().decode(pureBase64Url);
+                    System.out.println(imageBytes + "이미지 바이트다!!");
 
                     jdbcTemplate.update(createPostSql, postDTO.getContent(), imageBytes, postDTO.getCreatedAt(), postDTO.getUserId());
 
@@ -55,7 +57,7 @@ public class PostRepository {
     public List<EntirePost> getAllPost() {
         String sql = "SELECT p.id, p.content, p.image, p.created_at, p.user_id, f.profile_picture, f.full_name, f.introduction FROM posts p " +
                 "JOIN users u ON p.user_id = u.id " +
-                "JOIN user_profiles f ON u.id = f.user_id " +
+                "LEFT JOIN user_profiles f ON u.id = f.user_id " +
                 "ORDER BY p.created_at DESC";
         List<EntirePost> entirePosts = jdbcTemplate.query(sql, new EntirePostRowMapper());
         System.out.println(entirePosts + "전체 게시물이다!!");
