@@ -1,10 +1,8 @@
 package com.fs1stbackend.service;
 
-import com.fs1stbackend.dto.GoogleUserProfileDTO;
-import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
-import com.fs1stbackend.dto.UserAndUserProfileDTO;
-import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
+import com.fs1stbackend.dto.*;
 import com.fs1stbackend.model.UserAndUserProfile;
+import com.fs1stbackend.model.UserUserProfile;
 import com.fs1stbackend.repository.UserHomeRepository;
 import com.fs1stbackend.service.exception.InvalidTokenException;
 import com.fs1stbackend.service.exception.UserNotFoundException;
@@ -22,10 +20,9 @@ public class UserHomeService {
     @Autowired
     private UserHomeRepository userHomeRepository;
 
-    public UserAndUserProfileDTO findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
+    public TokenAndUserDataDTO findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
         String token = null;
         String userEmail = null;
-        UserAndUserProfileDTO userAndUserProfileDTO = null;
 
         // 토큰을 받았는지 확인
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -36,15 +33,19 @@ public class UserHomeService {
                 Claims claims = JwtTokenUtility.extractClaims(token);
                 userEmail = claims.getSubject();
 
-                UserAndUserProfile user = userHomeRepository.findUserProfileAtHome(userEmail);
+                UserUserProfile userData = userHomeRepository.findUserProfileAtHome(userEmail);
 
-                userAndUserProfileDTO = new UserAndUserProfileDTO(user);
+                if (userData.getUserProfile() != null) {
+                    return new TokenAndUserDataDTO(token, userData.getUser(), userData.getUserProfile());
+                } else {
+                    return new TokenAndUserDataDTO(token, userData.getUser(), null);
+                }
             } else {
                 throw new InvalidTokenException("해당 토큰이 유효하지 않습니다");
             }
 
         }
-        return userAndUserProfileDTO;
+        return null;
     }
 
     public String updateUserProfile(String email, UserAndUserProfileUpdateDTO profileUpdateDTO) {

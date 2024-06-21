@@ -4,7 +4,10 @@ import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
 import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
 import com.fs1stbackend.model.User;
 import com.fs1stbackend.model.UserAndUserProfile;
+import com.fs1stbackend.model.UserProfile;
+import com.fs1stbackend.model.UserUserProfile;
 import com.fs1stbackend.service.mapper.UserAndUserProfileRowMapper;
+import com.fs1stbackend.service.mapper.UserProfileRowMapper;
 import com.fs1stbackend.service.mapper.UserRowMapper;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +26,23 @@ public class UserHomeRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public UserAndUserProfile findUserProfileAtHome(String userEmail) {
-        String sql = "SELECT * " +
-                "FROM users u " +
-                "JOIN user_profiles p ON u.id = p.user_id " +
-                "WHERE u.email = ? " +
-                "LIMIT 1";
+    public UserUserProfile findUserProfileAtHome(String userEmail) {
+        String sql = "SELECT * FROM users WHERE email = ?  LIMIT 1";
 
-        UserAndUserProfile user =  jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserAndUserProfileRowMapper());
-        return user;
+        User existingUser =  jdbcTemplate.queryForObject(sql, new Object[]{userEmail}, new UserRowMapper());
+        //유저 프로필 확인
+        if(existingUser != null) {
+            Long userId = existingUser.getId();
+            String checkProfileSql = "SELECT * FROM user_profiles WHERE user_id = ?";
+
+            List<UserProfile> userProfile = jdbcTemplate.query(checkProfileSql, new Object[]{userId}, new UserProfileRowMapper());
+            UserProfile existingUserProfile = userProfile.isEmpty() ? null : userProfile.get(0);
+
+            UserUserProfile userUserProfile = new UserUserProfile(existingUser, existingUserProfile);
+            return userUserProfile;
+
+        }
+        return null;
 
         }
 

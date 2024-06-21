@@ -1,9 +1,6 @@
 package com.fs1stbackend.web;
 
-import com.fs1stbackend.dto.GoogleUserProfileDTO;
-import com.fs1stbackend.dto.GoogleUserProfileUpdateDTO;
-import com.fs1stbackend.dto.UserAndUserProfileDTO;
-import com.fs1stbackend.dto.UserAndUserProfileUpdateDTO;
+import com.fs1stbackend.dto.*;
 import com.fs1stbackend.service.UserHomeService;
 import com.fs1stbackend.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +16,11 @@ public class UserHomeController {
     private UserHomeService userHomeService;
 
     @GetMapping("/user")
-    public UserAndUserProfileDTO findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<TokenAndUserDataDTO> findUserProfileAtHome(@RequestHeader("Authorization") String authorizationHeader) {
         System.out.println("클라이언트로부터 토큰을 받았습니다");
-        UserAndUserProfileDTO userAndUserProfileDTO = userHomeService.findUserProfileAtHome(authorizationHeader);
+        TokenAndUserDataDTO userData = userHomeService.findUserProfileAtHome(authorizationHeader);
 
-        if (userAndUserProfileDTO != null) {
-            return userAndUserProfileDTO;
-        } else {
-            throw new UserNotFoundException("해당 토큰에 대한 유저 정보를 찾지 못하였습니다");
-        }
+        return ResponseEntity.ok().body(userData);
     }
 
     @PutMapping("/update/{email}/profile")

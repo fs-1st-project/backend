@@ -36,7 +36,7 @@ public class CommentRepository {
         String allCommentSql = "SELECT c.id, c.comment_content, c.created_at, c.user_id, f.profile_picture, f.full_name, f.introduction " +
                                 "FROM comments c " +
                                 "JOIN users u ON c.user_id = u.id " +
-                                "JOIN user_profiles f ON f.user_id = u.id " +
+                                "LEFT JOIN user_profiles f ON f.user_id = u.id " +
                                 "WHERE c.post_id = ? " +
                                 "ORDER BY c.created_at DESC";
 
